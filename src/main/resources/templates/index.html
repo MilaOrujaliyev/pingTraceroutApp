@@ -50,6 +50,7 @@
             max-width: 800px;
             width: 90%;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .input-container {
@@ -92,6 +93,17 @@
             position: relative;
         }
 
+        /* Bekleme Durumu Stilleri */
+        .waiting-container {
+            display: none;
+            margin-top: 20px; /* Bu, .button-container ve .waiting-container arasındaki boşluğu ayarlar. */
+            text-align: center;
+            z-index: 1000;
+        }
+
+
+
+
         .divider {
             content: "";
             position: absolute;
@@ -125,6 +137,48 @@
         button i {
             margin-right: 10px;
         }
+
+
+        /* Bekleme Durumu Stilleri */
+
+
+        .waiting-container span {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin: 0 5px;
+            background-color: #e57373; /* Başlangıçta kırmızı renkte */
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .waiting-container span:nth-child(2) {
+            background-color: #81C784; /* İkinci daire yeşil renkte */
+        }
+
+        .waiting-container span:nth-child(3) {
+            background-color: #64B5F6; /* Üçüncü daire mavi renkte */
+        }
+
+        .waiting-container span:nth-child(4) {
+            background-color: #FFD54F; /* Dördüncü daire sarı renkte */
+        }
+
+        .waiting-container span:nth-child(5) {
+            background-color: #BA68C8; /* Beşinci daire mor renkte */
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 
@@ -148,8 +202,27 @@
             <div class="divider"></div>
             <button type="button" onclick="location.href='traceroute.html'"><i class="fas fa-route"></i> Traceroute</button>
         </div>
+
+<!-- Bekleme Durumu Konteyneri -->
+<div class="waiting-container">
+    Sending Packets. Please Wait.
+    <span></span><span></span><span></span><span></span><span></span>
+</div>
     </form> <!-- Form sonu -->
 </main>
+<!-- JavaScript Kodları -->
+<script>
+    function showWaiting() {
+        document.querySelector('.waiting-container').style.display = 'block';
+    }
+    function hideWaiting() {
+        document.querySelector('.waiting-container').style.display = 'none';
+    }
+
+    document.querySelector('form').addEventListener('submit', function() {
+        showWaiting();
+    });
+</script>
 </body>
 
 </html>
