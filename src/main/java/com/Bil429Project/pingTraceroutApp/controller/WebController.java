@@ -25,6 +25,7 @@ public class WebController {
 
     @GetMapping("/")
     public String index() { //ana(ilk) sayfaya yönlendirme
+
         return "index";
     }
 
