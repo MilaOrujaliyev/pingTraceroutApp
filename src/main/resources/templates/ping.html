@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Result</title>
+    <style>
+        body {
+            margin-top: 600px;
+            padding-bottom: 100px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e7e7e7;
+        }
+
+        .table-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+            width: 80%;
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 1em;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+            color: #000;
+        }
+
+        th {
+            background-color: #000;
+            color: #fff;
+        }
+
+        h2 {
+            margin: 20px 0;
+            color: #000;
+            font-size: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h2.ip-result {
+            background-color: #e0f0ff;
+            color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 26px;
+        }
+
+        td.label, td.value {
+            padding: 4px 12px;
+        }
+
+        td.label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="table-container">
+    <h2 class="ip-result">Ping Result for Target: <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 25%;">Connected To</th>
+            <th style="width: 25%;">Response Time</th>
+            <th style="width: 25%;">TTL</th>
+            <th style="width: 25%;">No of Bytes</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${#numbers.sequence(0, result.responseTimes.size()-1)}">
+            <td th:text="${result.ipConnectedTo}"></td>
+            <td th:text="${result.responseTimes[i]} + ' ms'"></td>
+            <td th:text="${result.ttls[i]}"></td>
+            <td th:text="${result.bytes[i]}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table style="margin-top: 30px;">
+        <thead>
+        <tr>
+            <th colspan="2" style="width: 50%;">Packet Summary</th>
+            <th colspan="2" style="width: 50%;">Latency Summary</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="label">Sent</td>
+            <td class="value">4</td>
+            <td class="label">Min</td>
+            <td class="value" th:text="${result.minResponseTime} + ' ms'">- ms</td>
+        </tr>
+        <tr>
+            <td class="label">Received</td>
+            <td class="value" th:text="${result.responseTimes.size()}">-</td>
+            <td class="label">Max</td>
+            <td class="value" th:text="${result.maxResponseTime} + ' ms'">- ms</td>
+        </tr>
+        <tr>
+            <td class="label">Loss</td>
+            <td class="value" th:text="${result.packetLossPercentage} + '%'">-%</td>
+            <td class="label">Avg</td>
+            <td class="value" th:text="${result.averageResponseTime} + ' ms'">- ms</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+
+</html>
+

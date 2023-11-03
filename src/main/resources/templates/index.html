@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Traceroute and Ping Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Temel Ayarlar */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            color: #333;
+            padding-top: 50px;
+        }
+
+        /* Başlık Stilleri */
+        header {
+            text-align: center;
+            margin-bottom: 30px; /* Aralık arttırıldı */
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            font-weight: 600;
+            color: #000; /* Siyah renk */
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #555;
+            font-weight: 300;
+        }
+
+        /* Ana İçerik Stilleri */
+        main {
+            background-color: #fff;
+            padding: 2em;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .input-container {
+            margin-bottom: 2em;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500; /* Daha belirgin hale getirildi */
+            color: #000; /* Siyah renk */
+        }
+
+        input {
+            padding: 15px 20px 15px 50px;
+            width: 100%;
+            border: 2px solid #333; /* Daha belirgin bir kenarlık eklendi */
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            position: relative;
+            background-color: #FFF;
+            color: #000;
+            box-sizing: border-box; /* Dışa taşma sorununu çözmek için eklendi */
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        /* Buton Stilleri */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .divider {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 50%;
+        }
+
+        button {
+            padding: 16px 30px; /* Yükseklik arttırıldı */
+            background-color: #000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        button:hover {
+            background-color: #34495e;
+        }
+
+        button i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>Online Traceroute and Ping Visualization</h1>
+    <p>Access comprehensive network analysis and response time reports for your </p>
+    <p>IP address or domain with a fast and user-friendly interface. Check the health of your  </p>
+    <p>network, identify potential issues, and view this information through easy-to-understand visual graphics. </p>
+</header>
+<main>
+    <form th:action="@{/ping}" method="post"> <!-- Form eklendi -->
+        <div class="input-container">
+            <label for="target">Enter IP or Domain:</label>
+            <i class="fas fa-globe input-icon"></i>
+            <input type="text" id="target" name="target" placeholder="e.g. 192.168.1.1 or example.com" required>
+        </div>
+        <div class="button-container">
+            <button type="submit"><i class="fas fa-broadcast-tower"></i> Ping</button>
+            <!-- Traceroute butonu fonksiyonelliği olmadan bırakıldı -->
+            <div class="divider"></div>
+            <button type="button" onclick="location.href='traceroute.html'"><i class="fas fa-route"></i> Traceroute</button>
+        </div>
+    </form> <!-- Form sonu -->
+</main>
+</body>
+
+</html>
