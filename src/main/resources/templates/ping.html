@@ -161,13 +161,13 @@
         <tbody>
         <tr>
             <td class="label">Sent</td>
-            <td class="value">4</td>
+            <td class="value" th:text="${result.totalSentPackets}">-</td>
             <td class="label">Min</td>
             <td class="value" th:text="${result.minResponseTime} + ' ms'">- ms</td>
         </tr>
         <tr>
             <td class="label">Received</td>
-            <td class="value" th:text="${result.responseTimes.size()}">-</td>
+            <td class="value" th:text="${result.totalReceivedPackets}">-</td>
             <td class="label">Max</td>
             <td class="value" th:text="${result.maxResponseTime} + ' ms'">- ms</td>
         </tr>

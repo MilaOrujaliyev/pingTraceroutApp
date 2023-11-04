@@ -63,13 +63,41 @@ public class PingService {
                     double loss = 100.0 - (100.0 * received / total);
                     result.setPacketLossPercentage(loss);
                 }
-                if (line.contains("Lost")) {
-                    String[] parts = line.split("Lost =");
-                    String lostStr = parts[1].trim().split(" ")[0].trim();
-                    int lost = Integer.parseInt(lostStr.replace(",", ""));
-                    int total = 4;
-                    double loss = 100.0 * lost / total;
+//                if (line.contains("Lost")) {
+//                    String[] parts = line.split("Lost =");
+//                    String lostStr = parts[1].trim().split(" ")[0].trim();
+//                    int lost = Integer.parseInt(lostStr.replace(",", ""));
+//
+//                    int total = 4;//result.getTotalSentPackets();
+//                    double loss = 100.0 * lost / total;
+//                    result.setPacketLossPercentage(loss);
+//                    result.setTotalLostPackets(lost);
+//                }
+                if (line.contains("Packets: Sent")) {
+                    // Satırı virgülle bölüp her bir bölümü ayrı ayrı işleyeceğiz
+                    String[] parts = line.split(",");
+
+                    // "Sent = 4" kısmını parse edelim
+                    String sentPart = parts[0].trim(); // "Packets: Sent = 4"
+                    int sent = Integer.parseInt(sentPart.split("=")[1].trim()); // "=" işaretinden bölüp ikinci kısmı alıyoruz ve trim ile başındaki ve sonundaki boşluklardan kurtuluyoruz
+
+                    // "Received = 4" kısmını parse edelim
+                    String receivedPart = parts[1].trim(); // " Received = 4"
+                    int received = Integer.parseInt(receivedPart.split("=")[1].trim());
+
+                    // "Lost = 0 (0% loss)" kısmını parse edelim (bu örnekte gerek yok çünkü zaten "Lost" kısmını işliyoruz ama örnek olması açısından)
+                    String lostPart = parts[2].trim(); // " Lost = 0 (0% loss)"
+                    int lost = Integer.parseInt(lostPart.split("=")[1].trim().split(" ")[0]); // Kayıp paket sayısını alıyoruz
+                    result.setTotalLostPackets(lost);
+
+                    double loss = 100.0 * lost / sent;
+
                     result.setPacketLossPercentage(loss);
+
+                    // Alınan değerleri PingResult nesnesine atayalım
+                    result.setTotalSentPackets(sent);
+                    result.setTotalReceivedPackets(received);
+                    // Kayıp paket sayısını ve yüzdesini zaten hesaplamıştık, gerekirse burada da tekrar hesaplayabiliriz.
                 }
             }
             result.setResponseTimes(responseTimes);
