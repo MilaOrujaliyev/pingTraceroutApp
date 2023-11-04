@@ -23,7 +23,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #e7e7e7;
+            background-color: #D3D3D3;;
 
         }
 
@@ -136,13 +136,25 @@
         padding-left: 100px;
     }
 
-    .chart-container {
-        width: 30%; /* 3 grafik için genişliği düzenlendi. */
-        padding: 20px 40px; /* padding değerini artırıyoruz. */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); //kenarlara gölge eklendi
-        border: 2px solid #ccc; //bu  grafiklere kenarlık eklemek içindi
-        margin: 0 80px; /* Yukarı-aşağı 0px, sol-sağ 10px boşluk. */
-    }
+    .chart-container, .chart-pie-container {
+    /* Diğer stillerden bağımsız olarak iki sınıf için de geçerli olacak özellikler buraya yazılır. */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border: 14px solid #ccc;
+    background-color: #FFFFFF;
+    padding: 30px 40px;
+}
+
+.chart-container {
+    width: 40%; /* 2 çizgi ve bar grafik için genişlik. */
+    margin: 0 10px; /* Yukarı-aşağı 0px, sol-sağ 20px boşluk. */
+}
+
+.chart-pie-container {
+    width: 20%; /* Pie grafiği için genişlik. */
+    margin: 0 20px; /* Yukarı-aşağı 0px, sol-sağ 20px boşluk. */
+}
+
+
 
         /* Add this new style */
     .pinging-info {
@@ -185,7 +197,9 @@
         padding-left: 30px;
     }
     canvas {
-            background-color: #f5f5f5 ;
+            width: 100%;  // Genişliği maksimum yapın
+    max-width: 600px;  // İstediğiniz maksimum genişliği belirtin
+    b
      }
 
      .stats {
@@ -246,8 +260,8 @@
     </div>
 
     <!-- Pie Grafiği -->
-    <div class="chart-container">
-        <canvas id="pieChart" width="10" height="10"></canvas>
+    <div class="chart-pie-container">
+        <canvas id="pieChart" width="4000" height="200"></canvas>
     </div>
 </div>
 
@@ -270,7 +284,7 @@
     </div>
     <!-- Pie Grafiği -->
     <div class="chart-container">
-        <canvas id="last10PieChart" width="50" height="50"></canvas>
+        <canvas id="last10PieChart" width="400" height="200"></canvas>
     </div>
 </div>
 
