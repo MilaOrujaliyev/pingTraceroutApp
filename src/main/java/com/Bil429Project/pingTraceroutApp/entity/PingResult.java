@@ -3,6 +3,7 @@ package com.Bil429Project.pingTraceroutApp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,6 +15,7 @@ public class PingResult {
 
     private String ipConnectedTo;
 
+    private Date createdTime;
     // Tek tek ping sonuçları için bilgiler
     @ElementCollection
     private List<Integer> responseTimes; // Tüm yanıt süreleri (ms)
@@ -29,6 +31,15 @@ public class PingResult {
     private Integer totalSentPackets; // Gönderilen toplam paket sayısı
     private Integer totalReceivedPackets; // Alınan toplam paket sayısı
     private Integer totalLostPackets; // Kaybedilen toplam paket sayısı
+
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
 
     public String getIpConnectedTo() {
         return ipConnectedTo;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -93,6 +94,8 @@ public class PingService {
             result.setResponseTimes(responseTimes);
             result.setTtls(ttls);
             result.setBytes(bytes);
+
+            result.setCreatedTime(new Date());
 
             input.close();
             pingResultRepository.save(result);
