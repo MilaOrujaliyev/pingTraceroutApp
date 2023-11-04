@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ping Result</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var responseTimesData = /*[[${result.responseTimes}]]*/ [];
+        /*]]>*/
+    </script>
+
+
 
     <style>
         body {
@@ -113,6 +121,59 @@
         .back-button:hover {
             background-color: #ddd;
         }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .content-wrapper {
+        width: 100%;
+        display: flex;
+    }
+
+    .chart-container {
+        width: 30%; /* Grafik genişliğini ayarlayabilirsiniz. */
+        float: left; /* Grafiği sola alır. */
+        padding: 20px;
+    }
+        /* Add this new style */
+    .pinging-info {
+        width: 100%;
+        text-align: left; /* align content to the left */
+        padding: 10px 30px; /* padding added to left and right */
+        background-color: #f7f7f7; /* subtle background color for emphasis */
+        border-bottom: 1px solid #e0e0e0; /* subtle border at the bottom */
+    }
+
+    .pinging-info h2 {
+        font-size: 36px; /* increased font size */
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: 700; /* make it bold */
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+    }
+
+    .ping-target {
+        padding: 0 30px; /* added padding */
+    }
+
+    .ping-target h3 {
+        font-size: 28px; /* increased font size */
+        color: #444;
+    }
+
+    h3 span {
+        text-decoration: underline;
+    }
+
+    .pinging-target-text {
+    font-size: 24px; /* Yazı boyutunu 24px yaptık */
+    margin-bottom: 10px;
+    animation: blink 1s infinite;
+    font-weight: bold;
+    color: blue; /* Pinging yazısını mavi yaptık */
+    border-bottom: none; /* Altındaki çizgiyi kaldırdık */
+}
 
 
     </style>
@@ -127,10 +188,38 @@
 </div>
 
 <!-- Grafik ve diğer HTML içerikleri için boşluk -->
-<div style="height: 200px;"></div>
+<div style="height: 90px;"></div>
+
+<!-- Pinging target -->
+<div class="ping-target">
+    <h3> <span style="color: #ff00ff;" </span></h3>
+</div>
+
+
+<!-- Pinging information section -->
+<div class="pinging-info">
+    <h2>Graphs of current ping</h2>
+    <p class="pinging-target-text">Pinging <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></p>
+
+</div>
+
+
+<div class="chart-container">
+    <canvas id="responseTimesChart" width="400" height="200"></canvas>
+
+    <!-- Grafik altına eklenen bilgiler -->
+    <div>
+        <p><strong>Loss Rate:</strong> <span id="lossRate">-</span></p>
+        <p><strong>Sent Packet:</strong> <span id="sentPacket">-</span></p>
+        <p><strong>Received Packet:</strong> <span id="receivedPacket">-</span></p>
+        <p><strong>Average Latency:</strong> <span id="averageLatency">-</span></p>
+    </div>
+</div>
 
 <div class="table-container">
+
     <h2 class="ip-result">Ping Result for Target: <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></h2>
+
 
     <table>
         <thead>
@@ -180,6 +269,24 @@
         </tbody>
     </table>
 </div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var ctx = document.getElementById('responseTimesChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: responseTimesData.map((_, i) => i + 1),
+            datasets: [{
+                label: 'Response Times',
+                data: responseTimesData,
+                fill: true,
+                borderColor: 'black',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)'
+            }]
+        }
+    });
+    /*]]>*/
+</script>
 
 </body>
 
