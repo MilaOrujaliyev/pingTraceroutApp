@@ -63,16 +63,6 @@ public class PingService {
                     double loss = 100.0 - (100.0 * received / total);
                     result.setPacketLossPercentage(loss);
                 }
-//                if (line.contains("Lost")) {
-//                    String[] parts = line.split("Lost =");
-//                    String lostStr = parts[1].trim().split(" ")[0].trim();
-//                    int lost = Integer.parseInt(lostStr.replace(",", ""));
-//
-//                    int total = 4;//result.getTotalSentPackets();
-//                    double loss = 100.0 * lost / total;
-//                    result.setPacketLossPercentage(loss);
-//                    result.setTotalLostPackets(lost);
-//                }
                 if (line.contains("Packets: Sent")) {
                     // Satırı virgülle bölüp her bir bölümü ayrı ayrı işleyeceğiz
                     String[] parts = line.split(",");
