@@ -24,6 +24,7 @@
             flex-direction: column;
             align-items: center;
             background-color: #e7e7e7;
+
         }
 
         .table-container {
@@ -127,20 +128,22 @@
             100% { opacity: 1; }
         }
         .content-wrapper {
-        width: 100%;
+        width: 90%;
         display: flex;
         justify-content: space-between;
         margin-bottom: 40px;
         margin-top: 40px;
+        padding-left: 100px;
     }
 
     .chart-container {
         width: 30%; /* 3 grafik için genişliği düzenlendi. */
-        padding: 10px;
+        padding: 20px 40px; /* padding değerini artırıyoruz. */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); //kenarlara gölge eklendi
         border: 2px solid #ccc; //bu  grafiklere kenarlık eklemek içindi
-        margin: 0 20px; /* Yukarı-aşağı 0px, sol-sağ 10px boşluk. */
+        margin: 0 80px; /* Yukarı-aşağı 0px, sol-sağ 10px boşluk. */
     }
+
         /* Add this new style */
     .pinging-info {
         width: 100%;
@@ -156,6 +159,7 @@
         color: #333;
         font-weight: 700; /* make it bold */
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+        padding-left: 20px;
     }
 
     .ping-target {
@@ -178,10 +182,22 @@
         font-weight: bold;
         color: blue; /* Pinging yazısını mavi yaptık */
         border-bottom: none; /* Altındaki çizgiyi kaldırdık */
+        padding-left: 30px;
     }
     canvas {
             background-color: #f5f5f5 ;
      }
+
+     .stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+}
+
+.stat-item {
+    margin-right: 20px;  /* İsterseniz bu değeri ayarlayarak aradaki boşluğu artırabilir veya azaltabilirsiniz. */
+}
+
 
     </style>
 </head>
@@ -206,7 +222,7 @@
 <!-- Pinging information section -->
 <div class="pinging-info">
     <h2>Graphs of current ping</h2>
-    <p class="pinging-target-text">Pinging <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></p>
+    <p class="pinging-target-text">Ping Statistics of <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></p>
 
 </div>
 
@@ -216,12 +232,13 @@
         <canvas id="responseTimesChart" width="400" height="200"></canvas>
 
         <!-- Grafik altına eklenen bilgiler -->
-        <div>
-            <p><strong>Loss Rate:</strong> <span id="lossRate">-</span></p>
-            <p><strong>Sent Packet:</strong> <span id="sentPacket">-</span></p>
-            <p><strong>Received Packet:</strong> <span id="receivedPacket">-</span></p>
-            <p><strong>Average Latency:</strong> <span id="averageLatency">-</span></p>
+        <div class="stats">
+            <span class="stat-item">Loss Rate: <strong th:text="${result.packetLossPercentage + '%'}">-</strong></span>
+            <span class="stat-item">Sent Packet: <strong th:text="${result.totalSentPackets}">-</strong></span>
+            <span class="stat-item">Received Packet: <strong th:text="${result.totalReceivedPackets}">-</strong></span>
+            <span class="stat-item">Average Latency: <strong th:text="${result.averageResponseTime + 'ms'}">-</strong></span>
         </div>
+
     </div>
     <!-- Bar Grafiği -->
     <div class="chart-container">
@@ -230,14 +247,14 @@
 
     <!-- Pie Grafiği -->
     <div class="chart-container">
-        <canvas id="pieChart" width="400" height="200"></canvas>
+        <canvas id="pieChart" width="10" height="10"></canvas>
     </div>
 </div>
 
 <!-- Yeni eklenen bölüm: Son 10 ping için grafikler -->
 <div class="pinging-info">
-    <h2>Graphs of last 10 ping</h2>
-    <p class="pinging-target-text">Ping Statistics of <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></p>
+    <h2>Graphs of last 10 pings</h2>
+    <p class="pinging-target-text">Ping History Statistics of <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></p>
 </div>
 
 <!-- Bu kısımda yeni grafiklerinizi ekleyebilirsiniz. -->
@@ -253,7 +270,7 @@
     </div>
     <!-- Pie Grafiği -->
     <div class="chart-container">
-        <canvas id="last10PieChart" width="400" height="200"></canvas>
+        <canvas id="last10PieChart" width="50" height="50"></canvas>
     </div>
 </div>
 
@@ -314,49 +331,134 @@
     /*<![CDATA[*/
     var responseTimesData = /*[[${result.responseTimes}]]*/ [];
 
-    var ctxLine = document.getElementById('responseTimesChart').getContext('2d');
-    var myLineChart = new Chart(ctxLine, {
-        type: 'line',
-        data: {
-            labels: responseTimesData.map((_, i) => i + 1),
-            datasets: [{
-                label: 'Response Times',
-                data: responseTimesData,
-                fill: true,
-                borderColor: 'black',
-                backgroundColor: 'rgba(0, 0, 0, 0.2)'
-            }]
+    var packetLossPercentage = /*[[${result.packetLossPercentage}]]*/ 0;
+    var averageResponseTime = /*[[${result.averageResponseTime}]]*/ 0;
+    var maxResponseTime = /*[[${result.maxResponseTime}]]*/ 0;
+    var minResponseTime = /*[[${result.minResponseTime}]]*/ 0;
+
+  /*]]>*/
+
+
+  var ctxLine = document.getElementById('responseTimesChart').getContext('2d');
+
+// Değerlerin minimumunu ve maksimumunu buluyoruz.
+let minValue = Math.min(...responseTimesData);
+let maxValue = Math.max(...responseTimesData);
+
+// Uç değerlerin biraz dışına çıkıyoruz ki grafik daha net gözüksün.
+let extendedMaxValue = maxValue + 0.1 * (maxValue - minValue);
+
+var myLineChart = new Chart(ctxLine, {
+    type: 'line',
+    data: {
+        labels: responseTimesData.map((_, i) => "Packet "+(i + 1)),
+        datasets: [{
+            label: 'Response Times',
+            data: responseTimesData,
+            fill: true,
+            borderColor: '#3498db', // Güzel bir mavi tonu
+            backgroundColor: 'rgba(52, 152, 219, 0.2)' // Arka plan için aynı renk ama daha şeffaf
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                min: 0,
+                max: extendedMaxValue
+            },
+            x: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top', // Etiketlerin üstte gösterilmesi
+                labels: {
+                    boxWidth: 12,
+                    padding: 20, // Etiketler arasındaki boşluk
+                    align: 'start' // Etiketleri sola yaslayalım
+                }
+            }
         }
-    });
+    }
+});
+
+
 
     // Bar grafiği için örnek veriler ve yapı (veri bağlama gerekebilir)
-    var ctxBar = document.getElementById('barChart').getContext('2d');
-    var myBarChart = new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-            labels: ["Veri1", "Veri2", "Veri3"], // Örnek label'lar
-            datasets: [{
-                label: 'Bar Dataset',
-                data: [10, 20, 30], // Örnek veriler
-                backgroundColor: ['red', 'green', 'blue']
-            }]
+   var ctxBar = document.getElementById('barChart').getContext('2d');
+var myBarChart = new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+        labels: ["Minimum", "Average", "Maximum"],
+        datasets: [{
+            label: 'Latency Summary in milliseconds',
+            data: [minResponseTime, averageResponseTime, maxResponseTime],
+            backgroundColor: ['#FFDAB9', '#A1D6E2', '#DDA0DD']
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'Latency Summary in milliseconds',
+                font: {
+                    size: 16 // Yazı boyutunu ayarlama
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
         }
-    });
+    }
+});
+
 
     // Pie grafiği için örnek veriler ve yapı (veri bağlama gerekebilir)
+   var packetLossPercentage = /*[[${result.packetLossPercentage}]]*/ 0;
+    var backgroundColor;
+    var borderColor;
+
+    switch (true) {
+        case (packetLossPercentage === 0):
+            backgroundColor = ['rgba(0, 0, 0, 0.1)', 'rgba(0, 128, 0, 0.2)']; // Gri ve Yeşil
+            borderColor = ['rgba(0, 0, 0, 0.2)', 'green'];
+            break;
+        case (packetLossPercentage < 25):
+            backgroundColor = ['rgba(255, 255, 0, 0.2)', 'rgba(0, 0, 0, 0.1)']; // Sarı ve Gri
+            borderColor = ['yellow', 'rgba(0, 0, 0, 0.2)'];
+            break;
+        case (packetLossPercentage < 75):
+            backgroundColor = ['rgba(255, 165, 0, 0.2)', 'rgba(0, 0, 0, 0.1)']; // Turuncu ve Gri
+            borderColor = ['orange', 'rgba(0, 0, 0, 0.2)'];
+            break;
+        default:
+            backgroundColor = ['rgba(255, 0, 0, 0.2)', 'rgba(0, 0, 0, 0.1)']; // Kırmızı ve Gri
+            borderColor = ['red', 'rgba(0, 0, 0, 0.2)'];
+            break;
+    }
+
     var ctxPie = document.getElementById('pieChart').getContext('2d');
+
     var myPieChart = new Chart(ctxPie, {
         type: 'pie',
         data: {
-            labels: ["Veri1", "Veri2", "Veri3"], // Örnek label'lar
+            labels: [" Packets Loss Percentage", " Packets Success Percentage"],
             datasets: [{
                 label: 'Pie Dataset',
-                data: [10, 20, 30], // Örnek veriler
-                backgroundColor: ['red', 'yellow', 'blue']
+                data: [packetLossPercentage, 100 - packetLossPercentage],
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
+                borderWidth: [2, 0]
             }]
         }
     });
-    /*]]>*/
 
     // Son 10 ping için çizgi grafiği
 var last10ResponseTimesData = []; // Bu kısmı gerçek verinizle doldurun
@@ -404,7 +506,7 @@ var myLast10PieChart = new Chart(ctxLast10Pie, {
 });
 
 </script>
+
 </body>
 
 </html>
-
