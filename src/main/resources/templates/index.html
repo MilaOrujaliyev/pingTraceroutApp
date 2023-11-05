@@ -235,6 +235,20 @@
     document.querySelector('form').addEventListener('submit', function() {
         showWaiting();
     });
+
+    // Form gönderimi sırasında butonları pasifleştiren ve soluklaştıran kod
+    document.querySelector('form').addEventListener('submit', function(event) {
+        // Butonları seç
+        var buttons = document.querySelectorAll('button');
+        // Her buton için pasifleştirme işlemi yap
+        buttons.forEach(function(button) {
+            button.disabled = true; // Butonu pasifleştir
+            button.style.opacity = '0.5'; // Butonu soluk göster
+        });
+        showWaiting(); // Bekleme animasyonunu göster
+    });
+
+
 </script>
 </body>
 
