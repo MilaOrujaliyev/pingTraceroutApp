@@ -53,6 +53,14 @@ public class PingService {
                     responseTimes.add(Integer.valueOf(parts[4].split("=")[1].replace("ms", "")));
                     ttls.add(Integer.parseInt(parts[5].split("=")[1]));
                 }
+                if (line.contains("Request timed out")) {
+                    result.setIpConnectedTo(""); // PingResult sınıfındaki ipConnectedTo özelliğine atıyoruz
+
+                    bytes.add(null);
+                    responseTimes.add(null);
+                    ttls.add(null);
+                    result.setIpConnectedTo(null);
+                }
                 if (line.contains("Average")) {
                     String[] parts = line.split("=");
                     result.setAverageResponseTime(Double.valueOf(parts[2].trim().split("ms")[0].trim()));
@@ -99,6 +107,7 @@ public class PingService {
             result.setResponseTimes(responseTimes);
             result.setTtls(ttls);
             result.setBytes(bytes);
+
 
             result.setCreatedTime(new Date());
 

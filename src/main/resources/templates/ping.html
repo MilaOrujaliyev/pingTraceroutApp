@@ -249,7 +249,7 @@
         <div class="stats">
             <span class="stat-item">Loss Rate: <strong th:text="${result.packetLossPercentage + '%'}">-</strong></span>
             <span class="stat-item">Received Packet: <strong th:text="${result.totalReceivedPackets}">-</strong></span>
-            <span class="stat-item">Avg Latency: <strong th:text="${result.averageResponseTime + 'ms'}">-</strong></span>
+            <span class="stat-item">Avg Latency: <strong th:text="${result.averageResponseTime != null ? result.averageResponseTime + ' ms' : '-'}">-</strong></span>
         </div>
 
     </div>
@@ -282,10 +282,10 @@
         </thead>
         <tbody>
         <tr th:each="i : ${#numbers.sequence(0, result.responseTimes.size()-1)}">
-            <td th:text="${result.ipConnectedTo}"></td>
-            <td th:text="${result.responseTimes[i]} + ' ms'"></td>
-            <td th:text="${result.ttls[i]}"></td>
-            <td th:text="${result.bytes[i]}"></td>
+            <td th:text="${result.ipConnectedTo != null ? result.ipConnectedTo : '-'}"></td>
+            <td th:text="${result.responseTimes[i] != null ? result.responseTimes[i] + ' ms' : 'Request timed out.'}"></td>
+            <td th:text="${result.ttls[i] != null ? result.ttls[i] : '-'}">N/A</td>
+            <td th:text="${result.bytes[i] != null ? result.bytes[i] : '-'}"></td>
         </tr>
         </tbody>
     </table>
@@ -302,19 +302,21 @@
             <td class="label">Sent</td>
             <td class="value" th:text="${result.totalSentPackets}">-</td>
             <td class="label">Min</td>
-            <td class="value" th:text="${result.minResponseTime} + ' ms'">- ms</td>
+            <td class="value" th:text="${result.minResponseTime != null ? result.minResponseTime + ' ms' : '-'}">- ms</td>
+
         </tr>
         <tr>
             <td class="label">Received</td>
             <td class="value" th:text="${result.totalReceivedPackets}">-</td>
             <td class="label">Max</td>
-            <td class="value" th:text="${result.maxResponseTime} + ' ms'">- ms</td>
+            <td class="value" th:text="${result.maxResponseTime != null ? result.maxResponseTime + ' ms' : '-'}">- ms</td>
         </tr>
         <tr>
             <td class="label">Loss</td>
             <td class="value" th:text="${result.packetLossPercentage} + '%'">-%</td>
             <td class="label">Avg</td>
-            <td class="value" th:text="${result.averageResponseTime} + ' ms'">- ms</td>
+            <td class="value" th:text="${result.averageResponseTime != null ? result.averageResponseTime + ' ms' : '-'}">- ms</td>
+
         </tr>
         </tbody>
     </table>
