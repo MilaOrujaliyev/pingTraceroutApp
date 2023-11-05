@@ -264,28 +264,7 @@
     </div>
 </div>
 
-<!-- Yeni eklenen bölüm: Son 10 ping için grafikler -->
-<div class="pinging-info">
-    <h2>Graphs of last 10 pings</h2>
-    <p class="pinging-target-text">Ping History Statistics of <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></p>
-</div>
 
-<!-- Bu kısımda yeni grafiklerinizi ekleyebilirsiniz. -->
-<div class="content-wrapper">
-    <!-- Örnek olarak: -->
-    <!-- Çizgi Grafiği -->
-    <div class="chart-container">
-        <canvas id="last10ResponseTimesChart" width="400" height="200"></canvas>
-    </div>
-    <!-- Bar Grafiği -->
-    <div class="chart-container">
-        <canvas id="last10BarChart" width="400" height="200"></canvas>
-    </div>
-    <!-- Pie Grafiği -->
-    <div class="chart-container">
-        <canvas id="last10PieChart" width="400" height="200"></canvas>
-    </div>
-</div>
 
 <div class="table-container">
 
@@ -351,7 +330,7 @@
 
   /*]]>*/
 
-
+//line grafiği
   var ctxLine = document.getElementById('responseTimesChart').getContext('2d');
 
 // Değerlerin minimumunu ve maksimumunu buluyoruz.
@@ -399,7 +378,7 @@ var myLineChart = new Chart(ctxLine, {
 
 
 
-    // Bar grafiği için örnek veriler ve yapı (veri bağlama gerekebilir)
+    // Bar grafiği
    var ctxBar = document.getElementById('barChart').getContext('2d');
 var myBarChart = new Chart(ctxBar, {
     type: 'bar',
@@ -433,7 +412,7 @@ var myBarChart = new Chart(ctxBar, {
 });
 
 
-    // Pie grafiği için örnek veriler ve yapı (veri bağlama gerekebilir)
+    // Pie grafiği
    var packetLossPercentage = /*[[${result.packetLossPercentage}]]*/ 0;
     var backgroundColor;
     var borderColor;
@@ -473,50 +452,7 @@ var myBarChart = new Chart(ctxBar, {
         }
     });
 
-    // Son 10 ping için çizgi grafiği
-var last10ResponseTimesData = []; // Bu kısmı gerçek verinizle doldurun
-var ctxLast10Line = document.getElementById('last10ResponseTimesChart').getContext('2d');
-var myLast10LineChart = new Chart(ctxLast10Line, {
-    type: 'line',
-    data: {
-        labels: last10ResponseTimesData.map((_, i) => i + 1),
-        datasets: [{
-            label: 'Last 10 Response Times',
-            data: last10ResponseTimesData,
-            fill: true,
-            borderColor: 'black',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)'
-        }]
-    }
-});
 
-// Son 10 ping için bar grafiği
-var ctxLast10Bar = document.getElementById('last10BarChart').getContext('2d');
-var myLast10BarChart = new Chart(ctxLast10Bar, {
-    type: 'bar',
-    data: {
-        labels: ["Veri1", "Veri2", "Veri3"], // Örnek label'lar
-        datasets: [{
-            label: 'Last 10 Bar Dataset',
-            data: [10, 20, 30], // Örnek veriler
-            backgroundColor: ['red', 'green', 'blue']
-        }]
-    }
-});
-
-// Son 10 ping için pie grafiği
-var ctxLast10Pie = document.getElementById('last10PieChart').getContext('2d');
-var myLast10PieChart = new Chart(ctxLast10Pie, {
-    type: 'pie',
-    data: {
-        labels: ["Veri1", "Veri2", "Veri3"], // Örnek label'lar
-        datasets: [{
-            label: 'Last 10 Pie Dataset',
-            data: [10, 20, 30], // Örnek veriler
-            backgroundColor: ['red', 'yellow', 'blue']
-        }]
-    }
-});
 
 </script>
 
