@@ -20,7 +20,11 @@ public class WebController {
     public String ping(@RequestParam String target, Model model) {
         PingResult result = pingService.ping(target);
         model.addAttribute("result", result);
-        return "ping";
+        if(result.getErrorMessage() != null){
+            return "index";
+        }else{
+            return "ping";
+        }
     }
 
     @GetMapping("/")

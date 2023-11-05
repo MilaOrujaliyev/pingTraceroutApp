@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -176,6 +177,14 @@
                 transform: scale(1);
             }
         }
+
+        /* Hata Mesajı Stilleri */
+.error-message {
+    color: #ff0000; /* Kırmızı renk için */
+    font-weight: bold; /* Yazı tipini kalın yapmak için */
+    margin-top: 20px; /* Butonların üstündeki boşluğu ayarlamak için */
+    /* İsterseniz ekstra stiller ekleyebilirsiniz */
+}
     </style>
 </head>
 
@@ -183,7 +192,7 @@
 <header>
     <h1>Online Traceroute and Ping Visualization</h1>
     <p>Access comprehensive network analysis and response time reports for your </p>
-    <p>IP address or domain with a fast and user-friendly interface. Check the health of your  </p>
+    <p>IP address or domain with a fast and user-friendly interface. Check the health of your </p>
     <p>network, identify potential issues, and view this information through easy-to-understand visual graphics. </p>
 </header>
 <main>
@@ -197,14 +206,21 @@
             <button type="submit"><i class="fas fa-broadcast-tower"></i> Ping</button>
             <!-- Traceroute butonu fonksiyonelliği olmadan bırakıldı -->
             <div class="divider"></div>
-            <button type="button" onclick="location.href='traceroute.html'"><i class="fas fa-route"></i> Traceroute</button>
+            <button type="button" onclick="location.href='traceroute.html'"><i class="fas fa-route"></i> Traceroute
+            </button>
+
         </div>
 
-<!-- Bekleme Durumu Konteyneri -->
-<div class="waiting-container">
-    Sending Packets. Please Wait.
-    <span></span><span></span><span></span><span></span><span></span>
-</div>
+        <!-- Hata mesajını butonların altına yerleştirmek için -->
+        <div th:if="${result} != null and ${result.errorMessage} != null" class="error-message">
+            <p th:text="${result.errorMessage}"></p>
+        </div>
+
+        <!-- Bekleme Durumu Konteyneri -->
+        <div class="waiting-container">
+            Sending Packets. Please Wait.
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
     </form> <!-- Form sonu -->
 </main>
 <!-- JavaScript Kodları -->

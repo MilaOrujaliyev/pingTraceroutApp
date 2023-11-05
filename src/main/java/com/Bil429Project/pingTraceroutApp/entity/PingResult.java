@@ -31,7 +31,16 @@ public class PingResult {
     private Integer totalSentPackets; // Gönderilen toplam paket sayısı
     private Integer totalReceivedPackets; // Alınan toplam paket sayısı
     private Integer totalLostPackets; // Kaybedilen toplam paket sayısı
+    private String errorMessage;
 
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public Date getCreatedTime() {
         return createdTime;

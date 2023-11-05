@@ -37,6 +37,11 @@ public class PingService {
             BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = input.readLine()) != null) {
+
+                if(line.contains("Ping request could not")) {
+                    result.setErrorMessage(line);
+                }
+
                 if (line.contains("Reply from")) {
                     // Örneğin: Reply from 172.217.17.142: bytes=32 time=22ms TTL=57
                     String[] parts = line.split(" ");
