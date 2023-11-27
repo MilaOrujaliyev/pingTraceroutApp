@@ -15,7 +15,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #e7e7e7;
+            background-color: #181818;
         }
 
         .table-container {
@@ -123,59 +123,9 @@
     <button class="back-button" onclick="window.location.href='index.html'">Back to Home</button>
 </div>
 
-<div style="height: 200px;"></div>
 
-<div class="table-container">
-    <h2 class="ip-result">Traceroute Result for Target: <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></h2>
 
-    <table>
-        <thead>
-        <tr>
-            <th style="width: 25%;">Connected To</th>
-            <th style="width: 25%;">Response Time</th>
-            <th style="width: 25%;">TTL</th>
-            <th style="width: 25%;">No of Bytes</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="i : ${#numbers.sequence(0, result.responseTimes.size()-1)}">
-            <td th:text="${result.ipConnectedTo}"></td>
-            <td th:text="${result.responseTimes[i]} + ' ms'"></td>
-            <td th:text="${result.ttls[i]}"></td>
-            <td th:text="${result.bytes[i]}"></td>
-        </tr>
-        </tbody>
-    </table>
 
-    <table style="margin-top: 30px;">
-        <thead>
-        <tr>
-            <th colspan="2" style="width: 50%;">Packet Summary</th>
-            <th colspan="2" style="width: 50%;">Latency Summary</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="label">Sent</td>
-            <td class="value">4</td>
-            <td class="label">Min</td>
-            <td class="value" th:text="${result.minResponseTime} + ' ms'">- ms</td>
-        </tr>
-        <tr>
-            <td class="label">Received</td>
-            <td class="value" th:text="${result.responseTimes.size()}">-</td>
-            <td class="label">Max</td>
-            <td class="value" th:text="${result.maxResponseTime} + ' ms'">- ms</td>
-        </tr>
-        <tr>
-            <td class="label">Loss</td>
-            <td class="value" th:text="${result.packetLossPercentage} + '%'">-%</td>
-            <td class="label">Avg</td>
-            <td class="value" th:text="${result.averageResponseTime} + ' ms'">- ms</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
 
 </body>
 
