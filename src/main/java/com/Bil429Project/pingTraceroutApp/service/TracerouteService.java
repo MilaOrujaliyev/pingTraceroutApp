@@ -2,6 +2,7 @@ package com.Bil429Project.pingTraceroutApp.service;
 
 import com.Bil429Project.pingTraceroutApp.entity.HopInfo;
 import com.Bil429Project.pingTraceroutApp.entity.TracerouteResult;
+import com.Bil429Project.pingTraceroutApp.model.IpAPIModel;
 import com.Bil429Project.pingTraceroutApp.repository.TracerouteResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ import java.util.List;
 public class TracerouteService {
     @Autowired
     private TracerouteResultRepository repository;
+
+    @Autowired
+    private  ApiService apiService;
 
     public TracerouteResult performTraceroute(String target) {
         TracerouteResult tracerouteResult = new TracerouteResult();
@@ -39,9 +43,28 @@ public class TracerouteService {
             while ((inputLine = reader.readLine()) != null) {
                 // Gelen satırı işleyerek HopInfo nesnesini oluşturun ve doldurun
                 HopInfo hop = parseTracerouteLine(inputLine);
+
                 if (hop != null) {
+                    hop.setTracerouteResult(tracerouteResult);
                     // Bayrak URL'si ekleme (bayrak servisinize göre değişiklik gösterebilir)
                     //hop.setFlagUrl("https://flagcdn.com/h20/" + hop.getCountry().toLowerCase() + ".png"); //TODO:flag info ekle
+
+                    IpAPIModel ipAPIModel= apiService.getIpDetails("http://ip-api.com/json/"+hop.getIp());
+                    if(ipAPIModel.getStatus().equals("success")){
+                        hop.setCountry(ipAPIModel.getCountry());
+                        hop.setCountryCode(ipAPIModel.getCountryCode());
+                        hop.setRegion(ipAPIModel.getRegion());
+                        hop.setRegionName(ipAPIModel.getCity());
+                        hop.setCity(ipAPIModel.getRegion());
+                        hop.setZip(ipAPIModel.getZip());
+                        hop.setLatitude(ipAPIModel.getLat());
+                        hop.setLongitude(ipAPIModel.getLon());
+                        hop.setTimezone(ipAPIModel.getTimezone());
+                        hop.setIsp(ipAPIModel.getIsp());
+                        hop.setOrg(ipAPIModel.getOrg());
+                        hop.setAsCode(ipAPIModel.getAs());
+                    }
+
                     hops.add(hop);
                 }
             }
@@ -69,14 +92,15 @@ public class TracerouteService {
             if (parts[2].equals("*")) {
                 hopInfo.setIp("Request timed out.");
             } else {
-                hopInfo.setIp(parts[parts.length - 1]); // IP adresi satırın sonunda yer alır
+               String ip= parts[parts.length - 1].replace("[", "").replace("]", "");
+                hopInfo.setIp(ip); // IP adresi satırın sonunda yer alır
             }
 
             // Gecikme sürelerini ayıklama
             List<Integer> latencies = new ArrayList<>();
             for (int i = 1; i < parts.length - 1; i++) {
                 if (parts[i].endsWith("ms")) {
-                    int latencyValue = Integer.parseInt(parts[i].replace("ms", "").trim());
+                    int latencyValue = Integer.parseInt(parts[i-1].trim());
                     latencies.add(latencyValue);
                 } else {
                     latencies.add(null); // Zaman aşımı durumlarında null değer içeren gecikme süresi

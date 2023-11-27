@@ -13,11 +13,19 @@ public class HopInfo {
 
     private Integer hopNumber;
     private String country;
-    private String town;
+    private String countryCode;
+    private String region;
+    private String regionName;
+    private String city;
+    private String zip;
     private Double latitude;
     private Double longitude;
     private String ip;
-    private String hostname;
+
+    private String timezone;
+    private String isp;
+    private String org;
+    private String asCode;
 
     @ElementCollection
     private List<Integer> latencies;
@@ -52,14 +60,6 @@ public class HopInfo {
         this.country = country;
     }
 
-    public String getTown() {
-        return town;
-    }
-
-    public void setTown(String town) {
-        this.town = town;
-    }
-
     public Double getLatitude() {
         return latitude;
     }
@@ -84,14 +84,6 @@ public class HopInfo {
         this.ip = ip;
     }
 
-    public String getHostname() {
-        return hostname;
-    }
-
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
-    }
-
     public List<Integer> getLatencies() {
         return latencies;
     }
@@ -108,20 +100,79 @@ public class HopInfo {
         this.tracerouteResult = tracerouteResult;
     }
 
-    public HopInfo(Long id, Integer hopNumber, String country, String town, Double latitude, Double longitude, String ip, String hostname, List<Integer> latencies, TracerouteResult tracerouteResult) {
-        this.id = id;
-        this.hopNumber = hopNumber;
-        this.country = country;
-        this.town = town;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.ip = ip;
-        this.hostname = hostname;
-        this.latencies = latencies;
-        this.tracerouteResult = tracerouteResult;
+    public HopInfo() {
     }
 
-    public HopInfo() {
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getRegionName() {
+        return regionName;
+    }
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public String getIsp() {
+        return isp;
+    }
+
+    public void setIsp(String isp) {
+        this.isp = isp;
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
+    }
+
+    public String getAsCode() {
+        return asCode;
+    }
+
+    public void setAsCode(String asCode) {
+        this.asCode = asCode;
     }
 }
 

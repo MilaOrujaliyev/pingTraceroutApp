@@ -36,13 +36,13 @@ public class WebController {
    }
     @PostMapping("/traceroute")
     public String traceroute(@RequestParam String target, Model model) {
-        //TracerouteResult tracerouteResult = tracerouteService.performTraceroute(target);
-       // model.addAttribute("tracerouteResult", tracerouteResult);
-       // if(tracerouteResult.getErrorMessage() != null){
-     //       return "index";
-     //   }else{
+        TracerouteResult tracerouteResult = tracerouteService.performTraceroute(target);
+       model.addAttribute("tracerouteResult", tracerouteResult);
+       if(tracerouteResult.getErrorMessage() != null){
+            return "index";
+        }else{
             return "traceroute";
-      //  }
+       }
     }
 
 }
