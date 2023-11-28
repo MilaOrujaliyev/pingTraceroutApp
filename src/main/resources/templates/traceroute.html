@@ -7,6 +7,12 @@
     <title>Traceroute Result</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 
+    <!-- CesiumJS stil dosyaları -->
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <!-- CesiumJS kütüphanesi -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Cesium.js"></script>
+
+
     <style>
         body {
             margin: 0;
@@ -18,21 +24,7 @@
             background-color: #181818;
         }
 
-        .table-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border: 2px solid #e0e0e0;
-            width: 80%;
-            margin-bottom: 40px;
-        }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 1em;
-        }
 
         th, td {
             border: 1px solid #ddd;
@@ -75,35 +67,34 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            padding: 20px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
+            padding: 10px 20px;
+            box-sizing: border-box;
             background-color: black;
             z-index: 1000;
         }
 
         .ping-logo {
             color: white;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 700;
-            margin-left: 30px;
+            margin-left: 20px;
         }
 
         .title {
-            font-size: 48px;
+            font-size: 24px;
             font-weight: 700;
             color: white;
+            margin: 0 20px; /* Kenar boşluğunu ayarla */
             text-shadow: 3px 3px 10px rgba(255, 0, 0, 0.9); /* Yazıya kırmızı tonlarında ve daha yoğun gölge efekti eklendi. */
 
         }
 
         .back-button {
-            font-size: 18px;
+            font-size: 14px;
             background-color: #DADBDD;
             color: black;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px; /* İç boşlukları ayarla */
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
@@ -119,16 +110,6 @@
             display: flex;
         }
 
-        .table-container {
-            width: 40%; /* Ekranın 4/10'unu kaplayacak şekilde */
-            margin-left: 5%; /* Sol tarafta boşluk bırakmak için */
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px; /* Üstteki başlık alanından boşluk bırakmak için */
-        }
 
         th, td {
             padding: 8px;
@@ -140,6 +121,15 @@
             background-color: #333;
             color: #fff;
         }
+
+        //dünya modeli cesium container
+        #cesiumContainer {
+            width: 100%;
+            height: calc(100vh - 60px); /* Header yüksekliği kadar azalt */
+            top: 60px; /* Header yüksekliğini uygula */
+            left: 0;
+            position: absolute;
+        }
     </style>
 </head>
 
@@ -149,39 +139,25 @@
     <div class="title">TRACEROUTE RESULTS</div>
     <button class="back-button" onclick="window.location.href='index.html'">Back to Home</button>
 </div>
-<div class="content">
-    <div class="table-container">
-        <table>
-            <thead>
-            <tr>
-                <th>#</th>
-                <th></th> <!-- İsimsiz sütun -->
-                <th>Country</th>
-                <th>Town</th>
-                <th>Lat</th>
-                <th>Lon</th>
-                <th>IP</th>
-                <th>Hostname</th>
-                <th>Latencies</th>
-                <th>Distance</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Dinamik verileriniz buraya eklenecek -->
-            </tbody>
-        </table>
-    </div>
-    <!-- Diğer içerikler veya konteynerlar buraya eklenebilir -->
-</div>
 
+<!-- CesiumJS için konteyner -->
+<div id="cesiumContainer" style="width: 100%; height: 100vh;"></div>
 <script>
-    // Butonunuzun çalışmasını sağlayan JavaScript kodu
-    document.querySelector('.back-button').addEventListener('click', function() {
-        window.location.href = 'index.html'; // Anasayfaya yönlendirme
+    // Cesium ION'dan aldığınız token ile değiştirin.
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMjA0OGQxNS1mZTQwLTRlYTAtYjA3YS0xMDFmYTY1ZjM1NmQiLCJpZCI6MTc4ODUyLCJpYXQiOjE3MDAxNjUzNjh9.GgN_4CQLoe44OqfiahIv_5fDxNYXitTQ3xpEOUHN6cQ';
+
+    // Cesium Viewer'ı başlatın.
+    var viewer = new Cesium.Viewer('cesiumContainer');
+
+    // Cesium ION'dan aldığınız varlık ID'sini kullanarak varlığı yükleyin.
+    var assetId = 2275207; // Varlık ID'nizi buraya girin.
+    viewer.scene.primitives.add(Cesium.createOsmBuildings());
+    Cesium.IonResource.fromAssetId(assetId).then(function(resource) {
+        viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
+            url: resource
+        }));
     });
 </script>
-
-
 
 
 </body>
