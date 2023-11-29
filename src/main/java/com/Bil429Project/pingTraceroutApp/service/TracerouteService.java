@@ -64,7 +64,7 @@ public class TracerouteService {
                         hop.setAsCode(ipAPIModel.getAs());
 
                         if(hop.getCountryCode() != null) {
-                            String flagUrl = "https://flagcdn.com/16x12/" + hop.getCountryCode().toLowerCase() + ".png";
+                            String flagUrl = "https://flagcdn.com/24x18/" + hop.getCountryCode().toLowerCase() + ".png";
                             hop.setFlagUrl(flagUrl);
                         }
                     }
