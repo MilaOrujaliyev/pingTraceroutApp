@@ -13,6 +13,8 @@
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Cesium.js"></script>
 
 
+
+
     <style>
         body {
             margin: 0;
@@ -135,19 +137,34 @@
 
 <body>
 <div class="header">
-    <div class="ping-logo">TRACEROUTE</div>
+    <div class="ping-logo"></div>
     <div class="title">TRACEROUTE RESULTS</div>
     <button class="back-button" onclick="window.location.href='index.html'">Back to Home</button>
 </div>
 
+
+
+
 <!-- CesiumJS için konteyner -->
 <div id="cesiumContainer" style="width: 100%; height: 100vh;"></div>
+
+
+<div id="tracerouteTable" style="position: absolute; top: 50px; left: 10px; background: rgba(0, 0, 0, 0.5); color: white; padding: 10px; width: 300px; height: auto; overflow-y: auto;">
+    <table id="tracerouteResults" border="1" style="width: 100%; border-collapse: collapse;">
+        <!-- Dinamik olarak doldurulacak tablo başlıkları -->
+
+        <!-- Dinamik olarak doldurulacak tablo satırları -->
+    </table>
+</div>
+
 <script>
     // Cesium ION'dan aldığınız token ile değiştirin.
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMjA0OGQxNS1mZTQwLTRlYTAtYjA3YS0xMDFmYTY1ZjM1NmQiLCJpZCI6MTc4ODUyLCJpYXQiOjE3MDAxNjUzNjh9.GgN_4CQLoe44OqfiahIv_5fDxNYXitTQ3xpEOUHN6cQ';
 
     // Cesium Viewer'ı başlatın.
-    var viewer = new Cesium.Viewer('cesiumContainer');
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+            sceneMode: Cesium.SceneMode.SCENE3D
+        });
 
     // Cesium ION'dan aldığınız varlık ID'sini kullanarak varlığı yükleyin.
     var assetId = 2275207; // Varlık ID'nizi buraya girin.
@@ -158,48 +175,114 @@
         }));
     });
 
+    fetch('http://localhost:8081/api/traceroutes/last')
+    .then(response => response.json())
+    .then(tracerouteResult => {
+        const hops = tracerouteResult.hops;
+        let positions = [];
+        let previousHopPosition;
+
+        const offsetAmount = 0.09;
+
+        hops.forEach((hop, index) => {
+            // Yapay sapma ekleyin
+            let adjustedLongitude = hop.longitude;
+            let adjustedLatitude = hop.latitude;
+
+            if (index > 0) {
+                const prevHop = hops[index - 1];
+                if (Math.abs(prevHop.longitude - hop.longitude) < offsetAmount &&
+                    Math.abs(prevHop.latitude - hop.latitude) < offsetAmount) {
+                    // Eğer önceki hop ile koordinatlar çok yakınsa, biraz kaydır
+                    adjustedLongitude += offsetAmount;
+                    adjustedLatitude += offsetAmount;
+                }
+            }
+
+            const position = Cesium.Cartesian3.fromDegrees(adjustedLongitude, adjustedLatitude);
+            positions.push(position);
+
+            const isStartOrEnd = index === 0 || index === hops.length - 1;
+            const pointColor = isStartOrEnd ? Cesium.Color.BLUE : Cesium.Color.YELLOW;
+            const labelText = `Hop ${hop.hopNumber}: ${hop.countryCode} - ${hop.regionName}`;
+
+            viewer.entities.add({
+                position: position,
+                point: {
+                    pixelSize: 10,
+                    color: pointColor
+                },
+                label: {
+                    text: labelText,
+                    eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -500000.0),
+                    fillColor: Cesium.Color.WHITE,
+                    scale: 0.5,
+                    showBackground: true,
+                    backgroundPadding: new Cesium.Cartesian2(7, 5)
+                }
+            });
+
+            previousHopPosition = position;
+        });
+
+
+
+        if (positions.length > 1) {
+            viewer.entities.add({
+                polyline: {
+                    positions: positions,
+                    width: 3,
+                    material: new Cesium.PolylineDashMaterialProperty({
+                        color: Cesium.Color.RED,
+                        dashLength: 16,
+                        dashPattern: 255
+                    }),
+                    arcType: Cesium.ArcType.GEODESIC
+                }
+            });
+        }
+
+        viewer.zoomTo(viewer.entities);
+    })
+    .catch(error => console.error('Error fetching traceroute results:', error));
 
     fetch('http://localhost:8081/api/traceroutes/last')
         .then(response => response.json())
         .then(tracerouteResult => {
             const hops = tracerouteResult.hops;
+            // ... Cesium ile ilgili kodlarınız ...
 
-            // Koordinatları ve hop numaralarını topla
-            let positions = [];
-            hops.forEach((hop, index) => {
-                positions.push(Cesium.Cartesian3.fromDegrees(hop.longitude, hop.latitude));
-                viewer.entities.add({
-                    position: Cesium.Cartesian3.fromDegrees(hop.longitude, hop.latitude),
-                    point: {
-                        pixelSize: 5,
-                        color: Cesium.Color.YELLOW
-                    },
-                    label: {
-                        text: hop.hopNumber.toString(),
-                        eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -100000.0),
-                        fillColor: Cesium.Color.WHITE
-                    }
-                });
+           const table = document.getElementById('tracerouteTable');
+            hops.forEach(hop => {
+                // Tablo satırı oluşturun
+                const row = document.createElement('div');
+                row.className = 'hop-row';
+                row.innerHTML = `
+                    <div class="hop-info" onclick="toggleDetails(${hop.hopNumber})">
+                        #${hop.hopNumber} ${hop.countryCode} - ${hop.regionName}
+                        <img src="${hop.flagUrl}" alt="${hop.countryCode} flag">
+                    </div>
+                    <div class="hop-details" id="details-${hop.hopNumber}" style="display: none;">
+                        IP: ${hop.ip}<br>
+                        Timezone: ${hop.timezone}<br>
+                        ISP: ${hop.isp}<br>
+                        Org: ${hop.org}<br>
+                        AS Code: ${hop.asCode}<br>
+                        Latencies: ${hop.latencies.join(', ')}
+                    </div>
+                `;
+                table.appendChild(row);
             });
-
-            // Çizgi oluştur
-            const polyline = viewer.entities.add({
-                polyline: {
-                    positions: positions,
-                    width: 2,
-                    material: new Cesium.PolylineGlowMaterialProperty({
-                        glowPower: 0.2,
-                        color: Cesium.Color.RED
-                    }),
-                    arcType: Cesium.ArcType.GEODESIC
-                }
-            });
-
-            viewer.zoomTo(viewer.entities);
         })
-        .catch(error => {
-            console.error('Error fetching traceroute results:', error);
-        });
+        .catch(error => console.error('Error fetching traceroute results:', error));
+
+        // Detayları açıp kapatmak için fonksiyon
+        function toggleDetails(hopNumber) {
+            const details = document.getElementById(`details-${hopNumber}`);
+            details.style.display = details.style.display === 'none' ? 'block' : 'none';
+        }
+
+
 </script>
 
 

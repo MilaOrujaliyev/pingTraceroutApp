@@ -46,8 +46,7 @@ public class TracerouteService {
 
                 if (hop != null) {
                     hop.setTracerouteResult(tracerouteResult);
-                    // Bayrak URL'si ekleme (bayrak servisinize göre değişiklik gösterebilir)
-                    //hop.setFlagUrl("https://flagcdn.com/h20/" + hop.getCountry().toLowerCase() + ".png"); //TODO:flag info ekle
+
 
                     IpAPIModel ipAPIModel= apiService.getIpDetails("http://ip-api.com/json/"+hop.getIp());
                     if(ipAPIModel.getStatus().equals("success")){
@@ -63,6 +62,11 @@ public class TracerouteService {
                         hop.setIsp(ipAPIModel.getIsp());
                         hop.setOrg(ipAPIModel.getOrg());
                         hop.setAsCode(ipAPIModel.getAs());
+
+                        if(hop.getCountryCode() != null) {
+                            String flagUrl = "https://flagcdn.com/16x12/" + hop.getCountryCode().toLowerCase() + ".png";
+                            hop.setFlagUrl(flagUrl);
+                        }
                     }
 
                     hops.add(hop);

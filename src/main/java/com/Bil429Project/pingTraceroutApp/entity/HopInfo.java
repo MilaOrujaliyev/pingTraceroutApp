@@ -28,6 +28,9 @@ public class HopInfo {
     private String org;
     private String asCode;
 
+    private String flagUrl; // Bayrak URL'si
+
+
     @ElementCollection
     private List<Integer> latencies;
 
@@ -37,6 +40,15 @@ public class HopInfo {
     private TracerouteResult tracerouteResult;
 
     // Getter ve setter metodları...
+
+
+    public String getFlagUrl() {
+        return flagUrl;
+    }
+
+    public void setFlagUrl(String flagUrl) {
+        this.flagUrl = flagUrl;
+    }
 
     public Long getId() {
         return id;
