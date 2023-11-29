@@ -157,6 +157,49 @@
             url: resource
         }));
     });
+
+
+    fetch('http://localhost:8081/api/traceroutes/last')
+        .then(response => response.json())
+        .then(tracerouteResult => {
+            const hops = tracerouteResult.hops;
+
+            // Koordinatları ve hop numaralarını topla
+            let positions = [];
+            hops.forEach((hop, index) => {
+                positions.push(Cesium.Cartesian3.fromDegrees(hop.longitude, hop.latitude));
+                viewer.entities.add({
+                    position: Cesium.Cartesian3.fromDegrees(hop.longitude, hop.latitude),
+                    point: {
+                        pixelSize: 5,
+                        color: Cesium.Color.YELLOW
+                    },
+                    label: {
+                        text: hop.hopNumber.toString(),
+                        eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -100000.0),
+                        fillColor: Cesium.Color.WHITE
+                    }
+                });
+            });
+
+            // Çizgi oluştur
+            const polyline = viewer.entities.add({
+                polyline: {
+                    positions: positions,
+                    width: 2,
+                    material: new Cesium.PolylineGlowMaterialProperty({
+                        glowPower: 0.2,
+                        color: Cesium.Color.RED
+                    }),
+                    arcType: Cesium.ArcType.GEODESIC
+                }
+            });
+
+            viewer.zoomTo(viewer.entities);
+        })
+        .catch(error => {
+            console.error('Error fetching traceroute results:', error);
+        });
 </script>
 
 

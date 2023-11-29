@@ -1,5 +1,6 @@
 package com.Bil429Project.pingTraceroutApp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -30,6 +31,7 @@ public class HopInfo {
     @ElementCollection
     private List<Integer> latencies;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "traceroute_result_id")
     private TracerouteResult tracerouteResult;

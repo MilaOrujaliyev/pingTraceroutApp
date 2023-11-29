@@ -113,4 +113,20 @@ public class TracerouteService {
         return null; // Satır uygun formatta değilse null dön
     }
 
+
+    public List<TracerouteResult> getAllTracerouteResults() {
+        return repository.findAll();
+    }
+
+    public TracerouteResult getTracerouteResultById(Long id) throws Exception {
+        return repository.findById(id).orElseThrow(() -> new Exception("TracerouteResult not found with id: " + id));
+    }
+
+    public TracerouteResult getLastTracerouteResult() throws Exception {
+        // Veritabanından en son eklenen TracerouteResult nesnesini bulma
+        // Bu örnekte JPARepository'nin sağladığı findOne özelliği kullanılmıştır.
+        // Uygulamanızın ihtiyaçlarına göre bu kısım değişebilir.
+        return repository.findTopByOrderByIdDesc()
+                .orElseThrow(() -> new Exception("No traceroute results found."));
+    }
 }
