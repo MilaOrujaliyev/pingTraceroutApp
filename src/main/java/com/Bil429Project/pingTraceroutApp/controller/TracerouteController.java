@@ -39,4 +39,21 @@ public class TracerouteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @GetMapping("/traceroutes/last5")
+    public ResponseEntity<List<TracerouteResult>> getLastFiveTracerouteResults() {
+        List<TracerouteResult> lastFiveResults = tracerouteService.getLastFiveTracerouteResults();
+        return ResponseEntity.ok(lastFiveResults);
+    }
+    @GetMapping("/traceroutes/specific")
+    public ResponseEntity<TracerouteResult> getTracerouteByTarget(@RequestParam String target) {
+        // Servis katmanını kullanarak belirli bir hedef için traceroute verilerini alın
+        TracerouteResult tracerouteResult = tracerouteService.getTracerouteByTarget(target);
+        if (tracerouteResult != null) {
+            return ResponseEntity.ok(tracerouteResult);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

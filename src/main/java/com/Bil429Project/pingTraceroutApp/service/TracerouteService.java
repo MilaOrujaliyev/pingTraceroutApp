@@ -134,6 +134,16 @@ public class TracerouteService {
                 .orElseThrow(() -> new Exception("No traceroute results found."));
     }
 
+    public List<TracerouteResult> getLastFiveTracerouteResults() {
+        return repository.findTop5ByOrderByCreatedTimeDesc();
+    }
+
+    // Belirli bir hedef için en son traceroute sonucunu döndüren metot
+    public TracerouteResult getTracerouteByTarget(String target) {
+        return repository.findTopByTargetOrderByCreatedTimeDesc(target)
+                .orElseThrow(() -> new RuntimeException("Traceroute result not found for target: " + target));
+    }
+
     private void calculateDistancesAndLatencies(List<HopInfo> hops) {
         // İlk hop için koşulları kontrol et
         boolean firstCoordinateFound = false;
@@ -199,5 +209,6 @@ public class TracerouteService {
 
         return count > 0 ? Math.round((sum / count) * 100.0) / 100.0 : 0.00; // Yuvarlama işlemi ile 2 ondalık basamak
     }
+
 
 }
