@@ -71,7 +71,7 @@
             width: 100%;
             padding: 10px 20px;
             box-sizing: border-box;
-            background-color: black;
+            background-color: #1c1c1c;
             z-index: 1000;
         }
 
@@ -83,11 +83,11 @@
         }
 
         .title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: white;
             margin: 0 20px; /* Kenar boşluğunu ayarla */
-            text-shadow: 3px 3px 10px rgba(255, 0, 0, 0.9); /* Yazıya kırmızı tonlarında ve daha yoğun gölge efekti eklendi. */
+            text-shadow: 3px 3px 10px rgba(0, 255, 0, 0.7); /* Yazıya kırmızı tonlarında ve daha yoğun gölge efekti eklendi. */
 
         }
 
@@ -132,6 +132,75 @@
             left: 0;
             position: absolute;
         }
+
+        /* GeoTraceroute Başlık Stilleri */
+        #geoTracerouteHeader h3{
+            color: #ffffff;
+            font-size: 1.8em; /* Büyük yazı boyutu */
+        }
+        #geoTracerouteHeader strong {
+            color: #FFEB3B; /* Parlak sarı renk */
+            font-size: 1.2em; /* Büyük yazı boyutu */
+        }
+
+        /* Tablo Stilleri */
+        #tracerouteResults th, #tracerouteResults td {
+            padding: 15px; /* Artan padding */
+            text-align: left;
+            color: #000;
+            font-size: 0.5em; /* Büyük yazı boyutu */
+        }
+
+        /* Tablo Detayları için Stiller */
+        #tracerouteTable {
+            overflow-x: hidden;
+        }
+        .hop-info {
+            color: white; /* Hop bilgileri için beyaz renk */
+            display: flex;
+            align-items: center;
+            gap: 8px; /* İçerik arasında boşluk */
+            font-size: 0.9em; /* Adjust the font size to fit the design */
+            min-width: 500px; /* Veya ihtiyacınıza göre bir değer */
+             white-space: nowrap; /* Satır atlamadan tüm içeriği tek satırda göster */
+    overflow: hidden;    /* İçeriğin fazlasını gizle */
+    text-overflow: ellipsis; /* Fazla içeriği üç nokta ile göster */
+        }
+        .hop-info img {
+            height: 16px; /* Bayrak yüksekliğini sabitleyin */
+            width: auto; /* Genişliği otomatik ayarlayın */
+            min-width: 24px; /* Düzen kaymasını önlemek için minimum genişlik */
+        }
+        .hop-number {
+            color: #4CAF50; /* Hop numarası için mavi renk */
+            min-width: 30px; /* Minimum genişlik */
+            display: inline-block; /* Blok olarak göster */
+            text-align: center; /* Metni ortala */
+            font-weight: bold;
+        }
+        .hop-details {
+            color: #4CAF50; /* Yeşil renk */
+            background-color: transparent; /* Arkaplan rengini kaldır */
+            display: none;
+            margin-top: 5px;
+            padding-left: 40px; /* Bayrak ve numara genişliğine göre ayarlayın */
+        }
+
+        .hop-row {
+            margin-bottom: 12px; /* Satır arası boşluk */
+        }
+        .hop-info .hop-text:hover {
+            color: #ffeb3b; /* Sarı renk */
+        }
+        .hop-distance, .hop-latency {
+            font-size: 0.8em; /* Daha küçük font boyutu */
+            color: grey; /* Gri renk */
+        }
+        .hop-extra-info {
+            color: grey; /* Gri renk */
+            font-size: 0.8em; /* Daha küçük font boyutu */
+        }
+
     </style>
 </head>
 
@@ -148,8 +217,10 @@
 <!-- CesiumJS için konteyner -->
 <div id="cesiumContainer" style="width: 100%; height: 100vh;"></div>
 
-
+<!-- Table ve başlıkiçin konteyner -->
 <div id="tracerouteTable" style="position: absolute; top: 50px; left: 10px; background: rgba(0, 0, 0, 0.5); color: white; padding: 10px; width: 300px; height: auto; overflow-y: auto;">
+    <!-- Dinamik olarak doldurulacak başlık ve bayrak -->
+    <div id="geoTracerouteHeader"></div>
     <table id="tracerouteResults" border="1" style="width: 100%; border-collapse: collapse;">
         <!-- Dinamik olarak doldurulacak tablo başlıkları -->
 
@@ -176,28 +247,28 @@
     });
 
     fetch('http://localhost:8081/api/traceroutes/last')
-.then(response => response.json())
-.then(tracerouteResult => {
-    const hops = tracerouteResult.hops;
-    let positions = [];
-    let previousHopPosition;
+    .then(response => response.json())
+    .then(tracerouteResult => {
+        const hops = tracerouteResult.hops;
+        let positions = [];
+        let previousHopPosition;
 
-    const offsetAmount = 0.09;
+        const offsetAmount = 0.09;
 
-    hops.forEach((hop, index) => {
-        // Enlem ve boylam varsa işlem yap
-        if (hop.latitude && hop.longitude) {
-            let adjustedLongitude = hop.longitude;
-            let adjustedLatitude = hop.latitude;
+        hops.forEach((hop, index) => {
+            // Enlem ve boylam varsa işlem yap
+            if (hop.latitude && hop.longitude) {
+                let adjustedLongitude = hop.longitude;
+                let adjustedLatitude = hop.latitude;
 
-            if (index > 0) {
-                const prevHop = hops[index - 1];
-                if (Math.abs(prevHop.longitude - hop.longitude) < offsetAmount &&
-                    Math.abs(prevHop.latitude - hop.latitude) < offsetAmount) {
-                    adjustedLongitude += offsetAmount;
-                    adjustedLatitude += offsetAmount;
+                if (index > 0) {
+                    const prevHop = hops[index - 1];
+                    if (Math.abs(prevHop.longitude - hop.longitude) < offsetAmount &&
+                        Math.abs(prevHop.latitude - hop.latitude) < offsetAmount) {
+                        adjustedLongitude += offsetAmount;
+                        adjustedLatitude += offsetAmount;
+                    }
                 }
-            }
 
             const position = Cesium.Cartesian3.fromDegrees(adjustedLongitude, adjustedLatitude);
             positions.push(position);
@@ -251,25 +322,74 @@
             const hops = tracerouteResult.hops;
             // ... Cesium ile ilgili kodlarınız ...
 
+            // GeoTraceroute başlığını ve bayrağı ekleyin
+            const geoTracerouteHeader = document.getElementById('geoTracerouteHeader');
+            geoTracerouteHeader.innerHTML = `
+                <h3>GeoTraceroute to: <span style="color: #FFEB3B;">${tracerouteResult.target}</span></h3>
+                    <hr>
+            `;
+
+
+            // Function to calculate distance between two coordinates in kilometers
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            function toRadians(degrees) {
+                return degrees * Math.PI / 180;
+            }
+
+            var R = 6371; // Earth's radius in kilometers
+            var dLat = toRadians(lat2 - lat1);
+            var dLon = toRadians(lon2 - lon1);
+            var a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Function to calculate average latency from an array of latencies
+        function calculateAverageLatency(latencies) {
+            return latencies.reduce((a, b) => a + b, 0) / latencies.length;
+        }
+
+        // Add distance and average latency to each hop
+        for (let i = 1; i < tracerouteResult.hops.length; i++) {
+            let prevHop = tracerouteResult.hops[i - 1];
+            let hop = tracerouteResult.hops[i];
+            if (prevHop.latitude && prevHop.longitude && hop.latitude && hop.longitude) {
+                hop.distance = calculateDistance(prevHop.latitude, prevHop.longitude, hop.latitude, hop.longitude).toFixed(2);
+            } else {
+                hop.distance = "N/A";
+            }
+            hop.averageLatency = calculateAverageLatency(hop.latencies).toFixed(2);
+        }
+
+
+
            const table = document.getElementById('tracerouteTable');
             hops.forEach(hop => {
                 // Tablo satırı oluşturun
                 const row = document.createElement('div');
                 row.className = 'hop-row';
-                row.innerHTML = `
-                    <div class="hop-info" onclick="toggleDetails(${hop.hopNumber})">
-                        #${hop.hopNumber} ${hop.countryCode} - ${hop.regionName}
-                        <img src="${hop.flagUrl}" alt="${hop.countryCode} flag">
-                    </div>
-                    <div class="hop-details" id="details-${hop.hopNumber}" style="display: none;">
-                        IP: ${hop.ip}<br>
-                        Timezone: ${hop.timezone}<br>
-                        ISP: ${hop.isp}<br>
-                        Org: ${hop.org}<br>
-                        AS Code: ${hop.asCode}<br>
-                        Latencies: ${hop.latencies.join(', ')}
-                    </div>
-                `;
+                 row.innerHTML = `
+                <div class="hop-info" onclick="toggleDetails(${hop.hopNumber})">
+                    <span class="hop-number">#${hop.hopNumber}</span>
+                    <img src="${hop.flagUrl}" alt="${hop.countryCode} flag">
+                    <span class="hop-text">${hop.countryCode} - ${hop.regionName}</span>
+                    <span class="hop-extra-info">
+                    (${hop.distance || 'N/A'} km, ${hop.averageLatency || 'N/A'} ms)
+                </span>
+                </div>
+
+                <div class="hop-details" id="details-${hop.hopNumber}" style="display: none;">
+                    IP: ${hop.ip}<br>
+                    Timezone: ${hop.timezone}<br>
+                    ISP: ${hop.isp}<br>
+                    Org: ${hop.org}<br>
+                    AS Code: ${hop.asCode}<br>
+                    Latencies: ${hop.latencies.join(', ')}
+                </div>
+            `;
                 table.appendChild(row);
             });
         })
