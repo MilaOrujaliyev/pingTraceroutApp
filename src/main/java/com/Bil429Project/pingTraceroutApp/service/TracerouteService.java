@@ -76,7 +76,7 @@ public class TracerouteService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        calculateDistancesAndLatencies(hops);
         tracerouteResult.setHops(hops);
         repository.save(tracerouteResult);
 
@@ -133,4 +133,71 @@ public class TracerouteService {
         return repository.findTopByOrderByIdDesc()
                 .orElseThrow(() -> new Exception("No traceroute results found."));
     }
+
+    private void calculateDistancesAndLatencies(List<HopInfo> hops) {
+        // İlk hop için koşulları kontrol et
+        boolean firstCoordinateFound = false;
+        for (int i = 0; i < hops.size(); i++) {
+            HopInfo currentHop = hops.get(i);
+
+            // İlk koordinat bulunduysa veya koordinat bilgisi yoksa distance = 0.00 olarak ayarla
+            if ((currentHop.getLatitude() != null && currentHop.getLongitude() != null) || i == 0) {
+                currentHop.setDistance(0.00);
+                firstCoordinateFound = true; // İlk koordinatı işaret et
+            }
+
+            if (firstCoordinateFound && currentHop.getLatitude() == null && currentHop.getLongitude() == null) {
+                // İlk koordinat bulunduktan sonra koordinat bilgisi olmayan hoplar için
+                currentHop.setDistance(0.00);
+            }
+
+            if (i > 0 && firstCoordinateFound) {
+                HopInfo previousHop = hops.get(i - 1);
+                if (previousHop.getLatitude() != null && previousHop.getLongitude() != null &&
+                        currentHop.getLatitude() != null && currentHop.getLongitude() != null) {
+                    double distance = calculateDistance(
+                            previousHop.getLatitude(), previousHop.getLongitude(),
+                            currentHop.getLatitude(), currentHop.getLongitude()
+                    );
+                    currentHop.setDistance(Math.round(distance * 100.0) / 100.0); // Yuvarlama işlemi ile 2 ondalık basamak
+                }
+            }
+
+            if (currentHop.getLatencies() != null && !currentHop.getLatencies().isEmpty()) {
+                currentHop.setAverageLatency(calculateAverageLatency(currentHop.getLatencies()));
+            }
+        }
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // Dünya'nın yarıçapı kilometre cinsinden
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c; // hesaplanan mesafe kilometre cinsinden
+
+        return Math.round(distance * 100.0) / 100.0; // Yuvarlama işlemi ile 2 ondalık basamak
+    }
+
+    private double calculateAverageLatency(List<Integer> latencies) {
+        if (latencies == null || latencies.isEmpty()) {
+            // Gecikme süreleri listesi boş veya null ise, ortalama hesaplanamaz
+            return 0.00;
+        }
+
+        double sum = 0;
+        int count = 0;
+        for (Integer latency : latencies) {
+            if (latency != null) {
+                sum += latency;
+                count++;
+            }
+        }
+
+        return count > 0 ? Math.round((sum / count) * 100.0) / 100.0 : 0.00; // Yuvarlama işlemi ile 2 ondalık basamak
+    }
+
 }

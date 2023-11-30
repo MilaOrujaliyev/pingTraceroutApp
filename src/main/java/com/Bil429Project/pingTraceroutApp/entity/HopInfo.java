@@ -30,6 +30,10 @@ public class HopInfo {
 
     private String flagUrl; // Bayrak URL'si
 
+    private Double distance; // Mesafe bilgisi (kilometre cinsinden)
+
+    private Double averageLatency;
+
 
     @ElementCollection
     private List<Integer> latencies;
@@ -41,6 +45,22 @@ public class HopInfo {
 
     // Getter ve setter metodları...
 
+
+    public Double getAverageLatency() {
+        return averageLatency;
+    }
+
+    public void setAverageLatency(Double averageLatency) {
+        this.averageLatency = averageLatency;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
 
     public String getFlagUrl() {
         return flagUrl;
