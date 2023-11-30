@@ -29,7 +29,7 @@ public class TracerouteService {
 
         List<HopInfo> hops = new ArrayList<>();
 
-        //List<TracerouteResult.HopInfo> hops = new ArrayList<>();
+        boolean isErrorOccured = false;
 
         // Traceroute komutunun çalıştırılması
         String command = "tracert " + target;
@@ -41,6 +41,13 @@ public class TracerouteService {
 
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
+                // Hata mesajını kontrol edin ve işleyin
+                if (inputLine.toLowerCase().contains("unable to resolve target system name")) {
+                    isErrorOccured = true;
+                    tracerouteResult.setErrorMessage(inputLine);
+                    break; // Döngüyü kır ve işlemi durdur
+                }
+
                 // Gelen satırı işleyerek HopInfo nesnesini oluşturun ve doldurun
                 HopInfo hop = parseTracerouteLine(inputLine);
 
@@ -76,9 +83,14 @@ public class TracerouteService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        calculateDistancesAndLatencies(hops);
-        tracerouteResult.setHops(hops);
-        repository.save(tracerouteResult);
+        if (!isErrorOccured) {
+            calculateDistancesAndLatencies(hops);
+            tracerouteResult.setHops(hops);
+            repository.save(tracerouteResult);
+        } else {
+            // Hata varsa bu durumu kaydet
+            repository.save(tracerouteResult);
+        }
 
         return tracerouteResult;
     }
@@ -134,15 +146,6 @@ public class TracerouteService {
                 .orElseThrow(() -> new Exception("No traceroute results found."));
     }
 
-    public List<TracerouteResult> getLastFiveTracerouteResults() {
-        return repository.findTop5ByOrderByCreatedTimeDesc();
-    }
-
-    // Belirli bir hedef için en son traceroute sonucunu döndüren metot
-    public TracerouteResult getTracerouteByTarget(String target) {
-        return repository.findTopByTargetOrderByCreatedTimeDesc(target)
-                .orElseThrow(() -> new RuntimeException("Traceroute result not found for target: " + target));
-    }
 
     private void calculateDistancesAndLatencies(List<HopInfo> hops) {
         // İlk hop için koşulları kontrol et

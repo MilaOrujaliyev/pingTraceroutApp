@@ -12,6 +12,5 @@ public interface TracerouteResultRepository extends JpaRepository<TracerouteResu
 
     List<TracerouteResult> findTop5ByOrderByCreatedTimeDesc();
 
-    Optional<TracerouteResult> findTopByTargetOrderByCreatedTimeDesc(String target);
 }
 

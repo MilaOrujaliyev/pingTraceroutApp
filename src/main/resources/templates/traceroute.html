@@ -156,7 +156,7 @@
             color: white;
             padding: 10px;
             width: 400px;
-            max-height: 600px;
+            max-height:700px;
             overflow-y: hidden;
             box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); /* Beyaz bir gölge ekle */
         }
@@ -197,6 +197,7 @@
         }
         .hop-info .hop-text:hover {
             color: #ffeb3b; /* Sarı renk */
+            cursor: pointer; /* Fare imlecini pointer (el şeklinde) yap */
         }
         .hop-distance, .hop-latency {
             font-size: 0.8em; /* Daha küçük font boyutu */
@@ -207,33 +208,6 @@
             font-size: 0.8em; /* Daha küçük font boyutu */
         }
 
-        #lastTargetsContainer {
-            position: absolute; /* Pozisyonu sabit bir noktaya göre ayarla */
-            bottom: 140px; /* Üstten 10px boşluk bırak */
-            left: 20px; /* Soldan 10px boşluk bırak */
-            background: rgba(0, 0, 0, 0.7); /* Arka planı yarı saydam siyah yap */
-            color: white; /* Yazı rengini beyaz yap */
-            padding: 10px; /* İçten 10px boşluk bırak */
-            border-radius: 5px; /* Kenarları yuvarlak yap */
-            width: 250px; /* Genişliği 250px yap */
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); /* Beyaz bir gölge ekle */
-            font-family: 'Arial', sans-serif; /* Yazı tipini belirle */
-            font-size: 14px; /* Yazı boyutunu ayarla */
-            z-index: 1000; /* Z-index ile diğer öğelerin üzerinde görünmesini sağla */
-        }
-
-        #lastTargetsList {
-            list-style: none; /* Liste işaretlerini kaldır */
-            margin: 0; /* Margin değerlerini sıfırla */
-            padding: 0; /* Padding değerlerini sıfırla */
-            max-height: 200px; /* Maksimum yüksekliği 200px yap */
-            overflow-y: auto; /* İçerik yüksekliği aşıldığında kaydırma çubuğu ekle */
-        }
-        #lastTargetsList :hover {
-            color: #ffeb3b; /* Sarı renk */
-            cursor: pointer; /* Fare imlecini pointer (el şeklinde) yap */
-        }
-
 
     </style>
 </head>
@@ -242,11 +216,8 @@
 <div class="header">
     <div class="ping-logo"></div>
     <div class="title">TRACEROUTE RESULTS</div>
-    <button class="back-button" onclick="window.location.href='index.html'">Back to Home</button>
+    <a class="back-button" href="/">Back to Home</a>
 </div>
-
-
-
 
 <!-- CesiumJS için konteyner -->
 <div id="cesiumContainer" style="width: 100%; height: 100vh;"></div>
@@ -260,12 +231,6 @@
 
         <!-- Dinamik olarak doldurulacak tablo satırları -->
     </table>
-</div>
-<div id="lastTargetsContainer">
-    <h3>Last 5 targets checked:</h3>
-    <ul id="lastTargetsList">
-        <!-- Burada JavaScript kullanarak sonuçlar eklenecek -->
-    </ul>
 </div>
 
 <script>
@@ -418,57 +383,7 @@
         }
 
 
-        document.addEventListener('DOMContentLoaded', function() {
-    // Son 5 hedefi yükler
-    fetch('/api/traceroutes/last5')
-        .then(response => response.json())
-        .then(data => {
-            const listElement = document.getElementById('lastTargetsList');
-            listElement.innerHTML = ''; // Mevcut içeriği temizle
 
-            data.forEach(tracerouteResult => {
-                const timeAgo = calculateTimeAgo(new Date(tracerouteResult.createdTime));
-                const listItem = document.createElement('li');
-                listItem.textContent = `${tracerouteResult.target} (${timeAgo} ago)`;
-                listItem.addEventListener('click', function() {
-                    loadTargetData(tracerouteResult.target);
-                });
-                listElement.appendChild(listItem);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-});
-
-// Belirli bir hedef için traceroute verilerini yükler
-function loadTargetData(target) {
-    fetch(`/api/traceroutes/specific?target=${encodeURIComponent(target)}`)
-        .then(response => response.json())
-        .then(data => {
-            updatePageWithTargetData(data);
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-// Sayfayı alınan verilere göre günceller
-function updatePageWithTargetData(data) {
-    // Tablo ve harita güncellemeleri için kodlarınız burada olacak
-    console.log(data); // Örnek olarak, konsola veriyi yazdırıyoruz
-}
-
-// Zaman farkını hesaplayan fonksiyon
-function calculateTimeAgo(date) {
-    const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
-    if (diffInSeconds < 60) {
-        return `${diffInSeconds} seconds`;
-    } else if (diffInSeconds < 3600) {
-        return `${Math.floor(diffInSeconds / 60)} minutes`;
-    } else if (diffInSeconds < 86400) {
-        return `${Math.floor(diffInSeconds / 3600)} hours`;
-    } else {
-        return `${Math.floor(diffInSeconds / 86400)} days`;
-    }
-}
 
 
 

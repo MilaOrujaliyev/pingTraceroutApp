@@ -177,13 +177,20 @@
                 transform: scale(1);
             }
         }
+          @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
 
         /* Hata Mesajı Stilleri */
 .error-message {
     color: #ff0000; /* Kırmızı renk için */
     font-weight: bold; /* Yazı tipini kalın yapmak için */
     margin-top: 20px; /* Butonların üstündeki boşluğu ayarlamak için */
-    /* İsterseniz ekstra stiller ekleyebilirsiniz */
+    animation: blink 1s infinite;
+    font-size: 1.1em;
 }
     </style>
 </head>
@@ -208,15 +215,15 @@
             <button type="submit" name="action" value="traceroute" onclick="setFormAction('traceroute')"><i class="fas fa-route"></i> Traceroute</button>
         </div>
         <!-- Hata mesajını butonların altına yerleştirmek için -->
-        <div th:if="${result} != null and ${result.errorMessage} != null" class="error-message">
-            <p th:text="${result.errorMessage}"></p>
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
         </div>
         <!-- Bekleme Durumu Konteyneri -->
         <div class="waiting-container">
             Sending Packets. Please Wait.
             <span></span><span></span><span></span><span></span><span></span>
         </div>
-    </form> <!-- Form sonu -->
+    </form>
 </main>
 <!-- JavaScript Kodları -->
 <script>
@@ -229,8 +236,16 @@
         }
     }
     document.getElementById('processForm').addEventListener('submit', function() {
-        showWaiting();
-    });
+    // Hata mesajını sıfırla
+    var errorMessageDiv = document.querySelector('.error-message');
+    if (errorMessageDiv) {
+        errorMessageDiv.style.display = 'none';
+        errorMessageDiv.textContent = '';
+    }
+
+    // Bekleme durumunu göster
+    showWaiting();
+});
 
     function showWaiting() {
         document.querySelector('.waiting-container').style.display = 'block';

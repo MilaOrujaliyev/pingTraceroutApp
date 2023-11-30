@@ -24,13 +24,8 @@ public class PingService {
         List<Integer> ttls = new ArrayList<>();
         List<Integer> bytes = new ArrayList<>();
 
-        String command;
+        String command = String.format("ping -n 4 %s", target);
 
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            command = String.format("ping -n 4 %s", target);
-        } else {
-            command = String.format("ping -c 4 %s", target);
-        }
 
         try {
             Process process = new ProcessBuilder(command.split(" ")).start();

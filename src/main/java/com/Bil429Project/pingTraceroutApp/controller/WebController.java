@@ -29,6 +29,7 @@ public class WebController {
        PingResult result = pingService.ping(target);
        model.addAttribute("result", result);
        if(result.getErrorMessage() != null){
+           model.addAttribute("errorMessage", result.getErrorMessage());
            return "index";
        }else{
            return "ping";
@@ -39,6 +40,7 @@ public class WebController {
         TracerouteResult tracerouteResult = tracerouteService.performTraceroute(target);
        model.addAttribute("tracerouteResult", tracerouteResult);
        if(tracerouteResult.getErrorMessage() != null){
+           model.addAttribute("errorMessage", tracerouteResult.getErrorMessage());
             return "index";
         }else{
             return "traceroute";
