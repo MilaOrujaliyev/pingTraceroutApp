@@ -135,49 +135,45 @@
     }
 
     .chart-container, .chart-pie-container {
-    /* Diğer stillerden bağımsız olarak iki sınıf için de geçerli olacak özellikler buraya yazılır. */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    border: 14px solid #ccc;
-    background-color: #FFFFFF;
-    padding: 30px 40px;
-}
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        border: 14px solid #ccc;
+        background-color: #FFFFFF;
+        padding: 30px 40px;
+    }
 
-.chart-container {
-    width: 45%; /* 2 çizgi ve bar grafik için genişlik. */
-    margin: 0 15px; /* Yukarı-aşağı 0px, sol-sağ 20px boşluk. */
-}
+    .chart-container {
+        width: 45%;
+        margin: 0 15px;
+    }
 
-.chart-pie-container {
-    width: 25%; /* Pie grafiği için genişlik. */
-    margin: 0 15px; /* Yukarı-aşağı 0px, sol-sağ 20px boşluk. */
-}
+    .chart-pie-container {
+        width: 25%;
+        margin: 0 15px;
+    }
 
-
-
-        /* Add this new style */
     .pinging-info {
         width: 100%;
-        text-align: left; /* align content to the left */
-        padding: 10px 30px; /* padding added to left and right */
-        background-color: #f7f7f7; /* subtle background color for emphasis */
-        border-bottom: 1px solid #e0e0e0; /* subtle border at the bottom */
+        text-align: left;
+        padding: 10px 30px;
+        background-color: #f7f7f7;
+        border-bottom: 1px solid #e0e0e0;
     }
 
     .pinging-info h2 {
-        font-size: 36px; /* increased font size */
+        font-size: 36px;
         margin-bottom: 5px;
         color: #333;
-        font-weight: 700; /* make it bold */
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* subtle shadow for depth */
+        font-weight: 700;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
         padding-left: 20px;
     }
 
     .ping-target {
-        padding: 0 30px; /* added padding */
+        padding: 0 30px;
     }
 
     .ping-target h3 {
-        font-size: 28px; /* increased font size */
+        font-size: 28px;
         color: #444;
     }
 
@@ -186,30 +182,28 @@
     }
 
     .pinging-target-text {
-        font-size: 24px; /* Yazı boyutunu 24px yaptık */
+        font-size: 24px;
         margin-bottom: 10px;
         animation: blink 1s infinite;
         font-weight: bold;
-        color: blue; /* Pinging yazısını mavi yaptık */
-        border-bottom: none; /* Altındaki çizgiyi kaldırdık */
+        color: blue;
+        border-bottom: none;
         padding-left: 30px;
     }
     canvas {
-            width: 100%;  // Genişliği maksimum yapın
-    max-width: 600px;  // İstediğiniz maksimum genişliği belirtin
-
+        width: 100%;
+        max-width: 600px;
      }
 
      .stats {
         display: flex;
-        margin-top: 20px; /* İstenen miktar kadar aşağı alır. */
-        font-size: 12px;  /* Font boyutunu büyütür. */
+        margin-top: 20px;
+        font-size: 12px;  /
         }
 
     .stat-item {
-        margin-right: 20px;  /* İsterseniz bu değeri ayarlayarak aradaki boşluğu artırabilir veya azaltabilirsiniz. */
+        margin-right: 20px;
     }
-
 
     </style>
 </head>
@@ -222,7 +216,7 @@
 
 </div>
 
-<!-- Grafik ve diğer HTML içerikleri için boşluk -->
+<!-- Grafik ve diğer HTML içerikleri -->
 <div style="height: 90px;"></div>
 
 <!-- Pinging target -->
@@ -267,7 +261,6 @@
 <div class="table-container">
 
     <h2 class="ip-result">Ping Result for Target: <span style="color: #ff00ff;" th:text="${result.target}">Placeholder</span></h2>
-
 
     <table>
         <thead>
@@ -330,28 +323,26 @@
 
   /*]]>*/
 
-//line grafiği
-  var ctxLine = document.getElementById('responseTimesChart').getContext('2d');
+    //line grafiği
+      var ctxLine = document.getElementById('responseTimesChart').getContext('2d');
 
-// Değerlerin minimumunu ve maksimumunu buluyoruz.
-let minValue = Math.min(...responseTimesData);
-let maxValue = Math.max(...responseTimesData);
+    let minValue = Math.min(...responseTimesData);
+    let maxValue = Math.max(...responseTimesData);
 
-// Uç değerlerin biraz dışına çıkıyoruz ki grafik daha net gözüksün.
-let extendedMaxValue = maxValue + 0.1 * (maxValue - minValue);
+    let extendedMaxValue = maxValue + 0.1 * (maxValue - minValue);
 
-var myLineChart = new Chart(ctxLine, {
-    type: 'line',
-    data: {
-        labels: responseTimesData.map((_, i) => "Packet "+(i + 1)),
-        datasets: [{
-            label: 'Response Times',
-            data: responseTimesData,
-            fill: true,
-            borderColor: '#3498db', // Güzel bir mavi tonu
-            backgroundColor: 'rgba(52, 152, 219, 0.2)' // Arka plan için aynı renk ama daha şeffaf
-        }]
-    },
+    var myLineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: responseTimesData.map((_, i) => "Packet "+(i + 1)),
+            datasets: [{
+                label: 'Response Times',
+                data: responseTimesData,
+                fill: true,
+                borderColor: '#3498db', // Güzel bir mavi tonu
+                backgroundColor: 'rgba(52, 152, 219, 0.2)' // Arka plan için aynı renk ama daha şeffaf
+            }]
+        },
     options: {
         scales: {
             y: {
@@ -365,11 +356,11 @@ var myLineChart = new Chart(ctxLine, {
         },
         plugins: {
             legend: {
-                position: 'top', // Etiketlerin üstte gösterilmesi
+                position: 'top',
                 labels: {
                     boxWidth: 12,
-                    padding: 20, // Etiketler arasındaki boşluk
-                    align: 'start' // Etiketleri sola yaslayalım
+                    padding: 20,
+                    align: 'start'
                 }
             }
         }
@@ -377,7 +368,7 @@ var myLineChart = new Chart(ctxLine, {
 });
     // Bar grafiği
    var ctxBar = document.getElementById('barChart').getContext('2d');
-var myBarChart = new Chart(ctxBar, {
+    var myBarChart = new Chart(ctxBar, {
     type: 'bar',
     data: {
         labels: ["Minimum", "Average", "Maximum"],
@@ -396,7 +387,7 @@ var myBarChart = new Chart(ctxBar, {
                 display: true,
                 text: 'Latency Summary in milliseconds',
                 font: {
-                    size: 16 // Yazı boyutunu ayarlama
+                    size: 16
                 }
             }
         },
@@ -414,19 +405,19 @@ var myBarChart = new Chart(ctxBar, {
 
     switch (true) {
         case (packetLossPercentage === 0):
-            backgroundColor = ['rgba(0, 0, 0, 0.1)', 'rgba(0, 128, 0, 0.2)']; // Gri ve Yeşil
+            backgroundColor = ['rgba(0, 0, 0, 0.1)', 'rgba(0, 128, 0, 0.2)'];
             borderColor = ['rgba(0, 0, 0, 0.2)', 'green'];
             break;
         case (packetLossPercentage < 25):
-            backgroundColor = ['rgba(255, 255, 0, 0.2)', 'rgba(0, 0, 0, 0.1)']; // Sarı ve Gri
+            backgroundColor = ['rgba(255, 255, 0, 0.2)', 'rgba(0, 0, 0, 0.1)'];
             borderColor = ['yellow', 'rgba(0, 0, 0, 0.2)'];
             break;
         case (packetLossPercentage < 75):
-            backgroundColor = ['rgba(255, 165, 0, 0.2)', 'rgba(0, 0, 0, 0.1)']; // Turuncu ve Gri
+            backgroundColor = ['rgba(255, 165, 0, 0.2)', 'rgba(0, 0, 0, 0.1)'];
             borderColor = ['orange', 'rgba(0, 0, 0, 0.2)'];
             break;
         default:
-            backgroundColor = ['rgba(255, 0, 0, 0.2)', 'rgba(0, 0, 0, 0.1)']; // Kırmızı ve Gri
+            backgroundColor = ['rgba(255, 0, 0, 0.2)', 'rgba(0, 0, 0, 0.1)'];
             borderColor = ['red', 'rgba(0, 0, 0, 0.2)'];
             break;
     }

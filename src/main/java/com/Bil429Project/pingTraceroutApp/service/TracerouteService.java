@@ -31,7 +31,6 @@ public class TracerouteService {
 
         boolean isErrorOccured = false;
 
-        // Traceroute komutunun çalıştırılması
         String command = "tracert " + target;
 
 
@@ -41,19 +40,17 @@ public class TracerouteService {
 
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
-                // Hata mesajını kontrol edin ve işleyin
+                // Hata mesajını kontrolü
                 if (inputLine.toLowerCase().contains("unable to resolve target system name")) {
                     isErrorOccured = true;
                     tracerouteResult.setErrorMessage(inputLine);
-                    break; // Döngüyü kır ve işlemi durdur
+                    break;
                 }
 
-                // Gelen satırı işleyerek HopInfo nesnesini oluşturun ve doldurun
                 HopInfo hop = parseTracerouteLine(inputLine);
 
                 if (hop != null) {
                     hop.setTracerouteResult(tracerouteResult);
-
 
                     IpAPIModel ipAPIModel= apiService.getIpDetails("http://ip-api.com/json/"+hop.getIp());
                     if(ipAPIModel.getStatus().equals("success")){
@@ -88,18 +85,17 @@ public class TracerouteService {
             tracerouteResult.setHops(hops);
             repository.save(tracerouteResult);
         } else {
-            // Hata varsa bu durumu kaydet
+            // Hata varsa
             repository.save(tracerouteResult);
         }
-
         return tracerouteResult;
     }
 
     private HopInfo parseTracerouteLine(String line) {
-        // Önce satırın boşluklarını temizleyin ve parçalara ayırın
+        // Önce satırın boşluklarını temizleme ve parçalara ayırma
         String[] parts = line.trim().split("\\s+");
 
-        // Hop numarası ve IP adresini almak için kontrol edin
+        // Hop numarası ve IP adresini almak için kontrol
         if (parts.length >= 4 && parts[1].matches("\\d+")) {
             HopInfo hopInfo = new HopInfo();
             hopInfo.setHopNumber(Integer.parseInt(parts[0]));
@@ -109,9 +105,8 @@ public class TracerouteService {
                 hopInfo.setIp("Request timed out.");
             } else {
                String ip= parts[parts.length - 1].replace("[", "").replace("]", "");
-                hopInfo.setIp(ip); // IP adresi satırın sonunda yer alır
+                hopInfo.setIp(ip);
             }
-
             // Gecikme sürelerini ayıklama
             List<Integer> latencies = new ArrayList<>();
             for (int i = 1; i < parts.length - 1; i++) {
@@ -119,14 +114,14 @@ public class TracerouteService {
                     int latencyValue = Integer.parseInt(parts[i-1].trim());
                     latencies.add(latencyValue);
                 } else {
-                    latencies.add(null); // Zaman aşımı durumlarında null değer içeren gecikme süresi
+                    latencies.add(null); // Zaman aşımı durumu
                 }
             }
             hopInfo.setLatencies(latencies);
 
             return hopInfo;
         }
-        return null; // Satır uygun formatta değilse null dön
+        return null; // Satır uygun formatta değilse
     }
 
 
@@ -139,28 +134,22 @@ public class TracerouteService {
     }
 
     public TracerouteResult getLastTracerouteResult() throws Exception {
-        // Veritabanından en son eklenen TracerouteResult nesnesini bulma
-        // Bu örnekte JPARepository'nin sağladığı findOne özelliği kullanılmıştır.
-        // Uygulamanızın ihtiyaçlarına göre bu kısım değişebilir.
         return repository.findTopByOrderByIdDesc()
                 .orElseThrow(() -> new Exception("No traceroute results found."));
     }
 
 
     private void calculateDistancesAndLatencies(List<HopInfo> hops) {
-        // İlk hop için koşulları kontrol et
         boolean firstCoordinateFound = false;
         for (int i = 0; i < hops.size(); i++) {
             HopInfo currentHop = hops.get(i);
 
-            // İlk koordinat bulunduysa veya koordinat bilgisi yoksa distance = 0.00 olarak ayarla
             if ((currentHop.getLatitude() != null && currentHop.getLongitude() != null) || i == 0) {
                 currentHop.setDistance(0.00);
                 firstCoordinateFound = true; // İlk koordinatı işaret et
             }
 
             if (firstCoordinateFound && currentHop.getLatitude() == null && currentHop.getLongitude() == null) {
-                // İlk koordinat bulunduktan sonra koordinat bilgisi olmayan hoplar için
                 currentHop.setDistance(0.00);
             }
 
@@ -183,24 +172,22 @@ public class TracerouteService {
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // Dünya'nın yarıçapı kilometre cinsinden
+        final int R = 6371; // Dünya'nın yarıçapı km cinsinden
         double latDistance = Math.toRadians(lat2 - lat1);
         double lonDistance = Math.toRadians(lon2 - lon1);
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c; // hesaplanan mesafe kilometre cinsinden
+        double distance = R * c;
 
-        return Math.round(distance * 100.0) / 100.0; // Yuvarlama işlemi ile 2 ondalık basamak
+        return Math.round(distance * 100.0) / 100.0;
     }
 
     private double calculateAverageLatency(List<Integer> latencies) {
         if (latencies == null || latencies.isEmpty()) {
-            // Gecikme süreleri listesi boş veya null ise, ortalama hesaplanamaz
             return 0.00;
         }
-
         double sum = 0;
         int count = 0;
         for (Integer latency : latencies) {
@@ -209,9 +196,6 @@ public class TracerouteService {
                 count++;
             }
         }
-
-        return count > 0 ? Math.round((sum / count) * 100.0) / 100.0 : 0.00; // Yuvarlama işlemi ile 2 ondalık basamak
+        return count > 0 ? Math.round((sum / count) * 100.0) / 100.0 : 0.00;
     }
-
-
 }

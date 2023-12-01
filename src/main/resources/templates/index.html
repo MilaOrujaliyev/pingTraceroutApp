@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        /* Temel Ayarlar */
+
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -27,13 +27,13 @@
         /* Başlık Stilleri */
         header {
             text-align: center;
-            margin-bottom: 30px; /* Aralık arttırıldı */
+            margin-bottom: 30px;
         }
 
         header h1 {
             font-size: 3.5em;
             font-weight: 600;
-            color: #000; /* Siyah renk */
+            color: #000;
             margin-bottom: 10px;
         }
 
@@ -62,21 +62,21 @@
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 500; /* Daha belirgin hale getirildi */
-            color: #000; /* Siyah renk */
+            font-weight: 500;
+            color: #000;
         }
 
         input {
             padding: 15px 20px 15px 50px;
             width: 100%;
-            border: 2px solid #333; /* Daha belirgin bir kenarlık eklendi */
+            border: 2px solid #333;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.2s;
             position: relative;
             background-color: #FFF;
             color: #000;
-            box-sizing: border-box; /* Dışa taşma sorununu çözmek için eklendi */
+            box-sizing: border-box;
         }
 
         .input-icon {
@@ -97,7 +97,7 @@
         /* Bekleme Durumu Stilleri */
         .waiting-container {
             display: none;
-            margin-top: 20px; /* Bu, .button-container ve .waiting-container arasındaki boşluğu ayarlar. */
+            margin-top: 20px;
             text-align: center;
             z-index: 1000;
         }
@@ -115,7 +115,7 @@
         }
 
         button {
-            padding: 16px 30px; /* Yükseklik arttırıldı */
+            padding: 16px 30px;
             background-color: #000;
             color: white;
             border: none;
@@ -136,34 +136,31 @@
             margin-right: 10px;
         }
 
-
         /* Bekleme Durumu Stilleri */
-
-
         .waiting-container span {
             display: inline-block;
             width: 15px;
             height: 15px;
             margin: 0 5px;
-            background-color: #e57373; /* Başlangıçta kırmızı renkte */
+            background-color: #e57373;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
 
         .waiting-container span:nth-child(2) {
-            background-color: #81C784; /* İkinci daire yeşil renkte */
+            background-color: #81C784;
         }
 
         .waiting-container span:nth-child(3) {
-            background-color: #64B5F6; /* Üçüncü daire mavi renkte */
+            background-color: #64B5F6;
         }
 
         .waiting-container span:nth-child(4) {
-            background-color: #FFD54F; /* Dördüncü daire sarı renkte */
+            background-color: #FFD54F;
         }
 
         .waiting-container span:nth-child(5) {
-            background-color: #BA68C8; /* Beşinci daire mor renkte */
+            background-color: #BA68C8;
         }
 
         @keyframes pulse {
@@ -183,15 +180,14 @@
             100% { opacity: 1; }
         }
 
-
         /* Hata Mesajı Stilleri */
-.error-message {
-    color: #ff0000; /* Kırmızı renk için */
-    font-weight: bold; /* Yazı tipini kalın yapmak için */
-    margin-top: 20px; /* Butonların üstündeki boşluğu ayarlamak için */
-    animation: blink 1s infinite;
-    font-size: 1.1em;
-}
+        .error-message {
+            color: #ff0000; /* Kırmızı renk için */
+            font-weight: bold; /* Yazı tipini kalın yapmak için */
+            margin-top: 20px; /* Butonların üstündeki boşluğu ayarlamak için */
+            animation: blink 1s infinite;
+            font-size: 1.1em;
+        }
     </style>
 </head>
 
@@ -214,7 +210,7 @@
             <div class="divider"></div>
             <button type="submit" name="action" value="traceroute" onclick="setFormAction('traceroute')"><i class="fas fa-route"></i> Traceroute</button>
         </div>
-        <!-- Hata mesajını butonların altına yerleştirmek için -->
+        <!-- Hata mesajını butonların altına yerleştirme -->
         <div th:if="${errorMessage}" class="error-message">
             <p th:text="${errorMessage}"></p>
         </div>
@@ -236,14 +232,11 @@
         }
     }
     document.getElementById('processForm').addEventListener('submit', function() {
-    // Hata mesajını sıfırla
     var errorMessageDiv = document.querySelector('.error-message');
     if (errorMessageDiv) {
         errorMessageDiv.style.display = 'none';
         errorMessageDiv.textContent = '';
     }
-
-    // Bekleme durumunu göster
     showWaiting();
 });
 
@@ -256,14 +249,14 @@
     document.querySelector('form').addEventListener('submit', function() {
         showWaiting();
     });
-    // Form gönderimi sırasında butonları pasifleştiren ve soluklaştıran kod
+    // Form gönderimi sırasında butonları pasifleştiren ve soluklaştıran
     document.querySelector('form').addEventListener('submit', function(event) {
         var buttons = document.querySelectorAll('button');
         buttons.forEach(function(button) {
             button.disabled = true;
             button.style.opacity = '0.5';
         });
-        showWaiting(); // Bekleme animasyonu
+        showWaiting();
     });
 </script>
 </body>

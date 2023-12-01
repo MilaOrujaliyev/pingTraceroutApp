@@ -26,7 +26,6 @@ public class PingService {
 
         String command = String.format("ping -n 4 %s", target);
 
-
         try {
             Process process = new ProcessBuilder(command.split(" ")).start();
             BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -38,19 +37,16 @@ public class PingService {
                 }
 
                 if (line.contains("Reply from")) {
-                    // Örneğin: Reply from 172.217.17.142: bytes=32 time=22ms TTL=57
                     String[] parts = line.split(" ");
-                    // IP adresini çıkarıyoruz
                     String ip = parts[2].replace(":", "");
-                    result.setIpConnectedTo(ip); // PingResult sınıfındaki ipConnectedTo özelliğine atıyoruz
+                    result.setIpConnectedTo(ip);
 
                     bytes.add(Integer.parseInt(parts[3].split("=")[1]));
                     responseTimes.add(Integer.valueOf(parts[4].split("=")[1].replace("ms", "")));
                     ttls.add(Integer.parseInt(parts[5].split("=")[1]));
                 }
                 if (line.contains("Request timed out")) {
-                    result.setIpConnectedTo(""); // PingResult sınıfındaki ipConnectedTo özelliğine atıyoruz
-
+                    result.setIpConnectedTo("");
                     bytes.add(null);
                     responseTimes.add(null);
                     ttls.add(null);
@@ -73,30 +69,24 @@ public class PingService {
                     result.setPacketLossPercentage(loss);
                 }
                 if (line.contains("Packets: Sent")) {
-                    // Satırı virgülle bölüp her bir bölümü ayrı ayrı işleyeceğiz
                     String[] parts = line.split(",");
 
-                    // "Sent = 4" kısmını parse edelim
-                    String sentPart = parts[0].trim(); // "Packets: Sent = 4"
-                    int sent = Integer.parseInt(sentPart.split("=")[1].trim()); // "=" işaretinden bölüp ikinci kısmı alıyoruz ve trim ile başındaki ve sonundaki boşluklardan kurtuluyoruz
+                    String sentPart = parts[0].trim();
+                    int sent = Integer.parseInt(sentPart.split("=")[1].trim());
 
-                    // "Received = 4" kısmını parse edelim
-                    String receivedPart = parts[1].trim(); // " Received = 4"
+                    String receivedPart = parts[1].trim();
                     int received = Integer.parseInt(receivedPart.split("=")[1].trim());
 
-                    // "Lost = 0 (0% loss)" kısmını parse edelim (bu örnekte gerek yok çünkü zaten "Lost" kısmını işliyoruz ama örnek olması açısından)
-                    String lostPart = parts[2].trim(); // " Lost = 0 (0% loss)"
-                    int lost = Integer.parseInt(lostPart.split("=")[1].trim().split(" ")[0]); // Kayıp paket sayısını alıyoruz
+                    String lostPart = parts[2].trim();
+                    int lost = Integer.parseInt(lostPart.split("=")[1].trim().split(" ")[0]);
                     result.setTotalLostPackets(lost);
 
                     double loss = 100.0 * lost / sent;
 
                     result.setPacketLossPercentage(loss);
 
-                    // Alınan değerleri PingResult nesnesine atayalım
                     result.setTotalSentPackets(sent);
                     result.setTotalReceivedPackets(received);
-                    // Kayıp paket sayısını ve yüzdesini zaten hesaplamıştık, gerekirse burada da tekrar hesaplayabiliriz.
                 }
             }
             result.setResponseTimes(responseTimes);

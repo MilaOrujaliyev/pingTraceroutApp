@@ -81,8 +81,8 @@
             font-size: 28px;
             font-weight: 700;
             color: white;
-            margin: 0 20px; /* Kenar boşluğunu ayarla */
-            text-shadow: 3px 3px 10px rgba(0, 255, 0, 0.7); /* Yazıya kırmızı tonlarında ve daha yoğun gölge efekti eklendi. */
+            margin: 0 20px;
+            text-shadow: 3px 3px 10px rgba(0, 255, 0, 0.7);
 
         }
 
@@ -91,7 +91,7 @@
             background-color: #DADBDD;
             color: black;
             border: none;
-            padding: 8px 16px; /* İç boşlukları ayarla */
+            padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
@@ -102,7 +102,7 @@
             background-color: #ddd;
         }
         .content {
-            padding-top: 100px; /* Header yüksekliğine göre ayarlayın */
+            padding-top: 100px;
             width: 100%;
             display: flex;
         }
@@ -122,8 +122,8 @@
         //dünya modeli cesium container
         #cesiumContainer {
             width: 100%;
-            height: calc(100vh - 60px); /* Header yüksekliği kadar azalt */
-            top: 60px; /* Header yüksekliğini uygula */
+            height: calc(100vh - 60px);
+            top: 60px;
             left: 0;
             position: absolute;
         }
@@ -131,19 +131,19 @@
         /* GeoTraceroute Başlık Stilleri */
         #geoTracerouteHeader h3{
             color: #ffffff;
-            font-size: 1.8em; /* Büyük yazı boyutu */
+            font-size: 1.8em;
         }
         #geoTracerouteHeader strong {
-            color: #FFEB3B; /* Parlak sarı renk */
-            font-size: 1.2em; /* Büyük yazı boyutu */
+            color: #FFEB3B;
+            font-size: 1.2em;
         }
 
         /* Tablo Stilleri */
         #tracerouteResults th, #tracerouteResults td {
-            padding: 15px; /* Artan padding */
+            padding: 15px;
             text-align: left;
             color: #000;
-            font-size: 0.5em; /* Büyük yazı boyutu */
+            font-size: 0.5em;
         }
 
         /* Tablo Detayları için Stiller */
@@ -158,57 +158,55 @@
             width: 400px;
             max-height:700px;
             overflow-y: hidden;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); /* Beyaz bir gölge ekle */
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
         }
         .hop-info {
-            color: white; /* Hop bilgileri için beyaz renk */
+            color: white;
             display: flex;
             align-items: center;
-            gap: 8px; /* İçerik arasında boşluk */
-            font-size: 0.9em; /* Adjust the font size to fit the design */
-            min-width: 500px; /* Veya ihtiyacınıza göre bir değer */
-            white-space: nowrap; /* Satır atlamadan tüm içeriği tek satırda göster */
-            overflow: hidden;    /* İçeriğin fazlasını gizle */
-            text-overflow: ellipsis; /* Fazla içeriği üç nokta ile göster */
+            gap: 8px;
+            font-size: 0.9em;
+            min-width: 500px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .hop-info img {
-            height: 16px; /* Bayrak yüksekliğini sabitleyin */
-            width: auto; /* Genişliği otomatik ayarlayın */
-            min-width: 24px; /* Düzen kaymasını önlemek için minimum genişlik */
+            height: 16px;
+            width: auto;
+            min-width: 24px;
         }
         .hop-number {
-            color: #4CAF50; /* Hop numarası için yeşil renk */
-            min-width: 30px; /* Minimum genişlik */
-            display: inline-block; /* Blok olarak göster */
-            text-align: center; /* Metni ortala */
+            color: #4CAF50;
+            min-width: 30px;
+            display: inline-block;
+            text-align: center;
             font-weight: bold;
         }
         .hop-details {
-            color: #4CAF50; /* Yeşil renk */
-            background-color: transparent; /* Arkaplan rengini kaldır */
+            color: #4CAF50;
+            background-color: transparent;
             display: none;
             margin-top: 5px;
-            padding-left: 40px; /* Bayrak ve numara genişliğine göre ayarlayın */
-            font-size: 1.0em; /* Adjust the font size to fit the design */
+            padding-left: 40px;
+            font-size: 1.0em;
         }
 
         .hop-row {
-            margin-bottom: 12px; /* Satır arası boşluk */
+            margin-bottom: 12px;
         }
         .hop-info .hop-text:hover {
-            color: #ffeb3b; /* Sarı renk */
-            cursor: pointer; /* Fare imlecini pointer (el şeklinde) yap */
+            color: #ffeb3b;
+            cursor: pointer;
         }
         .hop-distance, .hop-latency {
-            font-size: 0.8em; /* Daha küçük font boyutu */
-            color: grey; /* Gri renk */
+            font-size: 0.8em;
+            color: grey;
         }
         .hop-extra-info {
-            color: grey; /* Gri renk */
-            font-size: 0.8em; /* Daha küçük font boyutu */
+            color: grey;
+            font-size: 0.8em;
         }
-
-
     </style>
 </head>
 
@@ -224,26 +222,24 @@
 
 <!-- Table ve başlıkiçin konteyner -->
 <div id="tracerouteTable" >
-    <!-- Dinamik olarak doldurulacak başlık ve bayrak -->
+    <!--  doldurulacak başlık ve bayrak -->
     <div id="geoTracerouteHeader"></div>
     <table id="tracerouteResults" border="1" style="width: 100%; border-collapse: collapse;">
-        <!-- Dinamik olarak doldurulacak tablo başlıkları -->
+        <!--  doldurulacak tablo başlıkları -->
 
-        <!-- Dinamik olarak doldurulacak tablo satırları -->
+        <!--  doldurulacak tablo satırları -->
     </table>
 </div>
 
 <script>
-    // Cesium ION'dan aldığınız token ile değiştirin.
+    // Cesium ION'dan alınan token
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMjA0OGQxNS1mZTQwLTRlYTAtYjA3YS0xMDFmYTY1ZjM1NmQiLCJpZCI6MTc4ODUyLCJpYXQiOjE3MDAxNjUzNjh9.GgN_4CQLoe44OqfiahIv_5fDxNYXitTQ3xpEOUHN6cQ';
 
-    // Cesium Viewer'ı başlatın.
     const viewer = new Cesium.Viewer('cesiumContainer', {
             sceneMode: Cesium.SceneMode.SCENE3D
         });
 
-    // Cesium ION'dan aldığınız varlık ID'sini kullanarak varlığı yükleyin.
-    var assetId = 2275207; // Varlık ID'nizi buraya girin.
+    var assetId = 2275207; // Varlık ID'si
     viewer.scene.primitives.add(Cesium.createOsmBuildings());
     Cesium.IonResource.fromAssetId(assetId).then(function(resource) {
         viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
@@ -261,7 +257,7 @@
         const offsetAmount = 0.09;
 
         hops.forEach((hop, index) => {
-            // Enlem ve boylam varsa işlem yap
+
             if (hop.latitude && hop.longitude) {
                 let adjustedLongitude = hop.longitude;
                 let adjustedLatitude = hop.latitude;
@@ -298,7 +294,7 @@
                 }
             });
         }
-        // Enlem ve boylam yoksa, bu hop'u atla
+
     });
 
     if (positions.length > 1) {
@@ -326,9 +322,6 @@
         .then(tracerouteResult => {
             const hops = tracerouteResult.hops;
 
-            // ... Cesium ile ilgili kodlarınız ...
-
-            // GeoTraceroute başlığını ve bayrağı ekleyin
             const geoTracerouteHeader = document.getElementById('geoTracerouteHeader');
             geoTracerouteHeader.innerHTML = `
                 <h3>GeoTraceroute to: <span style="color: #FFEB3B;">${tracerouteResult.target}</span></h3>
@@ -338,20 +331,20 @@
 
            const table = document.getElementById('tracerouteTable');
            tracerouteTable.addEventListener('wheel', function(e) {
-    if (e.deltaY > 0) { // Fare tekerleği aşağı doğru döndürüldüyse
-        tracerouteTable.scrollTop += 10; // İçeriği 10px aşağı kaydır
-    } else { // Fare tekerleği yukarı doğru döndürüldüyse
-        tracerouteTable.scrollTop -= 10; // İçeriği 10px yukarı kaydır
-    }
-});
+            if (e.deltaY > 0) {
+                tracerouteTable.scrollTop += 10;
+            } else {
+                tracerouteTable.scrollTop -= 10;
+            }
+            });
+
             hops.forEach(hop => {
                 if (!hop.latitude || !hop.longitude) {
-                hop.flagUrl = "https://flagcdn.com/24x18/tr.png"; // Türkiye bayrağının yolunu buraya ekleyin
+                hop.flagUrl = "https://flagcdn.com/24x18/tr.png";
                 hop.countryCode = "TR";
                 hop.regionName = "Local Network";
             }
 
-                // Tablo satırı oluşturun
                 const row = document.createElement('div');
                 row.className = 'hop-row';
                  row.innerHTML = `
@@ -376,21 +369,10 @@
         })
         .catch(error => console.error('Error fetching traceroute results:', error));
 
-        // Detayları açıp kapatmak için fonksiyon
         function toggleDetails(hopNumber) {
             const details = document.getElementById(`details-${hopNumber}`);
             details.style.display = details.style.display === 'none' ? 'block' : 'none';
         }
-
-
-
-
-
-
-
 </script>
-
-
 </body>
-
 </html>
