@@ -13,18 +13,18 @@ public class PingResult {
     private String ipConnectedTo;
     private Date createdTime;
     @ElementCollection
-    private List<Integer> responseTimes; // Tüm yanıt süreleri (ms)
+    private List<Integer> responseTimes;
     @ElementCollection
-    private List<Integer> bytes; // Her ping için giden bayt miktarı
+    private List<Integer> bytes;
     @ElementCollection
-    private List<Integer> ttls; // Her ping için TTL değerleri
+    private List<Integer> ttls;
     private Double averageResponseTime;
     private Double maxResponseTime;
     private Double minResponseTime;
     private Double packetLossPercentage;
-    private Integer totalSentPackets; // Gönderilen toplam paket sayısı
-    private Integer totalReceivedPackets; // Alınan toplam paket sayısı
-    private Integer totalLostPackets; // Kaybedilen toplam paket sayısı
+    private Integer totalSentPackets;
+    private Integer totalReceivedPackets;
+    private Integer totalLostPackets;
     private String errorMessage;
 
 

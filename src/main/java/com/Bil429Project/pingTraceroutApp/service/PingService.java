@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 @Service
 public class PingService {
-
     @Autowired
     private PingResultRepository pingResultRepository;
 
