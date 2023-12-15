@@ -1,0 +1,14 @@
+Host
+ec2-34-251-233-253.eu-west-1.compute.amazonaws.com
+Database
+d54br88buvk780
+User
+yxzngifdplpjur
+Port
+5432
+Password
+47d8752c1703fca8bdd91f6d1281ac7086de365612ca51d6a84bd85636fc758c
+URI
+postgres://yxzngifdplpjur:47d8752c1703fca8bdd91f6d1281ac7086de365612ca51d6a84bd85636fc758c@ec2-34-251-233-253.eu-west-1.compute.amazonaws.com:5432/d54br88buvk780
+Heroku CLI
+heroku pg:psql postgresql-objective-77209 --app ping-traceroute-baskent-app
